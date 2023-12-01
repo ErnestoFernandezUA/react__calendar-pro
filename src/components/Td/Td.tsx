@@ -4,8 +4,8 @@ import { useAppSelector } from '../../store/hooks';
 import {
   selectOrder,
   selectSortBy,
-} from '../../store/features/controls/controlsSlice';
-import { Sort } from '../../types/Sort';
+} from '../../store/features/controlsWeather/controlsWeatherSlice';
+import { Sort } from '../../types/sort';
 
 import './Td.scss';
 

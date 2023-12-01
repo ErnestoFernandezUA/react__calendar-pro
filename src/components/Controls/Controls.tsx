@@ -7,7 +7,7 @@ import Select, {
   MultiValue,
 } from 'react-select';
 import classNames from 'classnames';
-import { CityData } from '../../types/City';
+import { CityData } from '../../types/city';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   changeDisplayed,
@@ -15,7 +15,7 @@ import {
   selectAllData,
   selectAllKeys,
   selectSelectedCountries,
-} from '../../store/features/controls/controlsSlice';
+} from '../../store/features/controlsWeather/controlsWeatherSlice';
 
 type OptionType = { value: string; label: string };
 

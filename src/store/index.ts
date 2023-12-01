@@ -17,22 +17,35 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 // eslint-disable-next-line import/no-cycle
-import controlsSlice from './features/controls/controlsSlice';
+import controlsWeatherSlice from
+  './features/controlsWeather/controlsWeatherSlice';
 // eslint-disable-next-line import/no-cycle
 import cashSlice from './features/cash/cashSlice';
+// eslint-disable-next-line import/no-cycle
+import optionsSlice from './features/options/optionsSlice';
+// eslint-disable-next-line import/no-cycle
+import controlsSlice from './features/controls/controlsSlice';
+// eslint-disable-next-line import/no-cycle
+import intervalSlice from './features/interval/intervalSlice';
+// eslint-disable-next-line import/no-cycle
+import todosSlice from './features/todos/todosSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
   whitelist: [
-    'cash', 'controls',
+    'cash', 'controls', 'options',
   ],
   blacklist: ['user'],
 };
 
 const rootReducer = combineReducers({
+  controlsWeather: controlsWeatherSlice,
   controls: controlsSlice,
   cash: cashSlice,
+  options: optionsSlice,
+  interval: intervalSlice,
+  todos: todosSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

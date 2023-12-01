@@ -1,4 +1,4 @@
-import { TIME_TO_LIVE } from './constants';
+import { TIME_TO_LIVE } from './constants/TIME_TO_LIVE';
 
 export const isExpired = (timer?: string) => {
   if (!timer) {

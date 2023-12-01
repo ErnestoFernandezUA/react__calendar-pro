@@ -12,7 +12,7 @@ import {
   selectErrorWeekWeather,
   selectStatusWeekWeather,
   selectWeekWeather,
-} from '../../store/features/controls/controlsSlice';
+} from '../../store/features/controlsWeather/controlsWeatherSlice';
 import { WrapperContent } from '../WrapperContent';
 import './ChartViewer.scss';
 import { Chart } from '../Chart/Chart';

@@ -2,8 +2,8 @@ import { FC } from 'react';
 import classnames from 'classnames';
 
 import { ConditionalRenderer } from '../ConditionalRenderer';
-import { CityData } from '../../types/City';
-import { Sort } from '../../types/Sort';
+import { CityData } from '../../types/city';
+import { Sort } from '../../types/sort';
 import { Td } from '../Td';
 import { useNumberFormat } from '../../hooks/useNumberFormat';
 import {
@@ -14,7 +14,7 @@ import {
   selectLoadingList,
   selectSelected,
   setCurrent,
-} from '../../store/features/controls/controlsSlice';
+} from '../../store/features/controlsWeather/controlsWeatherSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import './City.scss';
 

@@ -1,5 +1,5 @@
 import { Average } from '../components/Chart';
-import { WeatherAverage } from './Weather';
+import { WeatherAverage } from './weather';
 
 export interface CityData {
   geoNameId: string;

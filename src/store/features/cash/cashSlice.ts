@@ -4,7 +4,7 @@ import {
 } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
-import { CityData } from '../../../types/City';
+import { CityData } from '../../../types/city';
 
 interface CashItemCash { [key: string]: { city: CityData, timerId: string }}
 

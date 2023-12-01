@@ -9,8 +9,8 @@ import {
   selectDisplayed,
   selectSelectedCountries,
   selectStatus,
-} from '../../store/features/controls/controlsSlice';
-import { Sort } from '../../types/Sort';
+} from '../../store/features/controlsWeather/controlsWeatherSlice';
+import { Sort } from '../../types/sort';
 import { HeadCell } from '../HeadCell';
 import './Table.scss';
 import { Loader } from '../Loader';
