@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Day } from './Day';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { MONTH_NAMES } from '../utils/constants/MONTH';
+import { WEEK } from '../utils/constants/WEEK';
 
 const Wrapper = styled.div<{ format?: string }>`
   ${({ format }) => {
@@ -37,13 +38,19 @@ const MonthTitle = styled.div<{ format?: string }>`
     display: none;
   `}
 
+  ${({ format }) => (format === FORMAT.MONTH || format === FORMAT.WEEK) && css`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-items: center;
+    margin-bottom: 10px;
+  `}
+
   ${({ format }) => (format === FORMAT.YEAR) && css`
     padding: 10px;
   `}
 
   & button {
-    border: none;
-    background-color: transparent;
+    /* background-color: transparent; */
     cursor: pointer;
   }
 `;
@@ -96,13 +103,19 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
   return (
     <Wrapper format={format}>
       <MonthTitle format={format}>
-        <button
-          type="button"
-          onClick={e => onMonthHandler(e)}
-          data-month-value={String(interval[0])}
-        >
-          {format === FORMAT.YEAR && MONTH_NAMES[monthName.current]}
-        </button>
+        {format === FORMAT.YEAR ? (
+          <button
+            type="button"
+            onClick={e => onMonthHandler(e)}
+            data-month-value={String(interval[0])}
+          >
+            {MONTH_NAMES[monthName.current]}
+          </button>
+        ) : (
+          WEEK.map(d => (
+            <div key={d}>{d}</div>
+          ))
+        )}
       </MonthTitle>
 
       <MonthContainer format={format}>

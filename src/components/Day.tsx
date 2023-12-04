@@ -32,7 +32,7 @@ const Wrapper = styled.div<StyledProps>`
   box-sizing: border-box;
   padding: 0;
   font-size: 14px;
-  cursor: pointer;
+
 
   ${({ format }) => (format === FORMAT.DAY) && css`
     height: 100vh;
@@ -40,9 +40,10 @@ const Wrapper = styled.div<StyledProps>`
 
   ${({ format }) => (format === FORMAT.WEEK || format === FORMAT.MONTH) && css`
     height: 205px;
+    cursor: pointer;
 
     &:hover{
-      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      box-shadow: var(--box-shadow-color) 0px 1px 4px;
     }
   `}
 
@@ -54,8 +55,8 @@ const Wrapper = styled.div<StyledProps>`
     opacity: 0.4;
   `}
 
-  ${({ isCurrentDay }) => isCurrentDay && css`
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  ${({ isCurrentDay, format }) => isCurrentDay && format !== FORMAT.DAY && css`
+    box-shadow: var(--box-shadow-color) 0px 1px 4px;
   `}
 
   ${({ isTodosToday, format }) => isTodosToday
@@ -79,13 +80,12 @@ const DayTitle = styled.div<{ isCurrentDay: boolean }>`
 
   ${({ isCurrentDay }) => !isCurrentDay && css`
     &:hover {
-      background-color: #e6e6e6;
+      background-color: var(--toggle-bg);
     }
   `}
 `;
 
 const DayOfWeek = styled.button<StyledProps>`
-  background-color: transparent;
   cursor: pointer;
   padding: 0 10px;
   line-height: 30px;
@@ -142,7 +142,6 @@ const DayListTodos = styled.div<{ format?: string }>`
 
 interface DayProps {
   startDay: number;
-  // eslint-disable-next-line react/require-default-props
   disabled?: boolean;
 }
 

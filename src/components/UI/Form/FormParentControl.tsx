@@ -14,7 +14,6 @@ import { Button } from '../Button';
 import { Form } from './Form';
 
 const Wrapper = styled.div`
-  background-color: white;
   z-index: 150;
 `;
 

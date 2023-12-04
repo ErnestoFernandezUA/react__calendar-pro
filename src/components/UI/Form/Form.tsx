@@ -46,15 +46,14 @@ const Wrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   z-index: 100;
-  background-color: white;
+  background-color: var(--background-color);
   opacity: 1;
   width: 460px;
   height: 400px;
   box-sizing: border-box;
   padding: 20px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: var(--box-shadow-color) 0px 3px 8px;
 
   & h3 {
     margin-bottom: 20px;
@@ -71,7 +70,6 @@ const FormItem = styled.div`
   align-items: center;
 
   & label {
-    /* border: 1px solid red; */
     width: 120px;
     text-align: right;
     padding-right: 10px;
@@ -80,18 +78,18 @@ const FormItem = styled.div`
 
   & input {
     width: 300px;
-    text-align: left;
-    padding-right: 10px;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 1px solid black 0.4;
+    /* text-align: left; */
+    /* padding-right: 10px; */
+    /* box-sizing: border-box; */
+    /* border: none; */
+    /* border-bottom: 1px solid black 0.4; */
 
     ::-webkit-input-placeholder {font-style: italic}
     :-moz-placeholder {font-style: italic}
     :-ms-input-placeholder {font-style: italic}
 
     &:focus, &:active {
-      border: 1px solid red;
+      /* border: 1px solid red; */
     }
   }
 `;

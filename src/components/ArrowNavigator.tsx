@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 const Arrow = styled.button`
   padding: 0;
   border: none;
-  background-color: transparent;
+  /* background-color: transparent; */
   outline: none;
   display: inline-flex;
   flex-direction: row;

@@ -19,11 +19,11 @@ const Wrapper = styled.div`
   position: absolute;
   right: 0;
   top: 45px;
-  background-color: white;
+  background-color: var(--background-color);
   width: 400px;
   box-sizing: border-box;
   padding: 20px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: var(--box-shadow-color) 0px 3px 8px;
 `;
 
 const Years = styled.div`
@@ -31,7 +31,8 @@ const Years = styled.div`
   grid-template-columns: repeat(4, 1fr);
   row-gap: 20px;
   & > :hover{
-    background-color: #e6e6e6;
+    /* background-color: var(--toggle-bg); */
+    color: var(--toggle-fg);
   }
 `;
 
@@ -39,18 +40,12 @@ const Months = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   row-gap: 20px;
-  & > :hover{
-    background-color: #e6e6e6;
-  }
 `;
 
 const Days = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   row-gap: 20px;
-  & > :hover{
-    background-color: #e6e6e6;
-  }
 `;
 
 type DatePickerBoxProps = {

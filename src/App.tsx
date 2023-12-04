@@ -1,14 +1,9 @@
-// import React from 'react';
-// import { ChartViewer } from './components/ChartViewer';
 import { useEffect } from 'react';
-// import { DataViewer } from './components/DataViewer';
 import {
-  selectIsDarkTheme,
   selectTheme,
   setTheme,
 } from './store/features/options/optionsSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import './App.scss';
 import { Theme } from './types/theme';
 import {
   selectCurrentDate,
@@ -24,12 +19,13 @@ import { FORMAT } from './utils/constants/FORMAT';
 import { Year } from './components/Year';
 import { Month } from './components/Month';
 import { Day } from './components/Day';
-import { Controls } from './components/Controls';
+import './App.scss';
+import { Header } from './components/Header';
 
-function App() {
+export default function App() {
   const dispatch = useAppDispatch();
   const theme = useAppSelector(selectTheme);
-  const isDark = useAppSelector(selectIsDarkTheme);
+
   const currentDate = useAppSelector(selectCurrentDate);
 
   const start = useAppSelector(selectStartInterval);
@@ -52,19 +48,7 @@ function App() {
 
   return (
     <div className="App">
-
-      <header>
-        <h1>Calendar PRO MAX</h1>
-        <Controls />
-        <button
-          type="button"
-          onClick={() => dispatch(setTheme(isDark ? Theme.LIGHT : Theme.DARK))}
-        >
-          {theme === Theme.SYSTEM && 'System'}
-          {theme === Theme.DARK && 'Dark'}
-          {theme === Theme.LIGHT && 'Light'}
-        </button>
-      </header>
+      <Header />
 
       <main>
         {/* <ChartViewer /> */}
@@ -73,12 +57,10 @@ function App() {
         {format === FORMAT.YEAR && <Year interval={interval} />}
 
         {(format === FORMAT.MONTH || format === FORMAT.WEEK)
-        && <Month interval={interval} />}
+          && <Month interval={interval} />}
 
         {format === FORMAT.DAY && <Day startDay={interval[0]} />}
       </main>
     </div>
   );
 }
-
-export default App;

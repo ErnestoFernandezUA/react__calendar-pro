@@ -1,20 +1,20 @@
 import styled from 'styled-components';
 
 export const Button = styled.button`
-  padding: 0;
+  /* padding: 0;
   margin: 0;
   border: none;
-  background-color: transparent;
+  background-color: inherit;
   outline: none;
   justify-content: center;
   cursor: pointer;
   height: fit-content;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-family: 'Raleway', sans-serif;
+  justify-content: center; */
+  /* font-family: 'Raleway', sans-serif; */
 
   &:hover{
-    background-color: #e6e6e6;
+    /* background-color: var(--toggle-bg); */
   }
 `;

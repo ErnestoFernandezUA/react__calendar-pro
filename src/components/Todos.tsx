@@ -51,7 +51,7 @@ const TodoContainer = styled.div<{ format?: string }>`
 
 const TodoTitle = styled.div<{ color: string, format?: string }>`
   background-color: ${props => props.color};
-
+  color: var(--secondary-text-color);
   padding: 7px 10px;
   border-radius: 8px;
   display: flex;

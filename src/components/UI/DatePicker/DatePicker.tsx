@@ -20,7 +20,7 @@ const DatePickerTitle = styled.div`
 
 const DatePickerButton = styled.button`
   border: none;
-  background-color: transparent;
+  background-color: inherit;
   outline: none;
   display: inline-flex;
   flex-direction: row;

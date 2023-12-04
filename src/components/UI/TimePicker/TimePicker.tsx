@@ -13,7 +13,7 @@ import { Button } from '../Button';
 const Wrapper = styled.div`
   right: 0;
   top: 45px;
-  background-color: white;
+  /* background-color: white; */
   width: 220px;
   box-sizing: border-box;
   padding: 20px;
