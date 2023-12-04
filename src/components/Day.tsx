@@ -230,9 +230,6 @@ export const Day: FunctionComponent<DayProps> = ({
     );
   }
 
-  // eslint-disable-next-line no-console
-  console.log(day, dayOfWeek);
-
   return (
     <Wrapper
       format={format}
@@ -265,8 +262,6 @@ export const Day: FunctionComponent<DayProps> = ({
             && (format === FORMAT.MONTH || format === FORMAT.WEEK)
             && ` ${month}`}
 
-          &nbsp;
-          {day + dayOfWeek}
         </DateString>
       </DayTitle>
 

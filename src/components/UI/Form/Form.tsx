@@ -48,12 +48,11 @@ const Wrapper = styled.div`
   transform: translate(-50%, -50%);
   z-index: 100;
   background-color: var(--background-color);
-  opacity: 1;
-  width: 460px;
-  height: 400px;
+  padding: 2em;
   box-sizing: border-box;
-  padding: 20px;
+  border-radius: 0.3em;
   box-shadow: var(--box-shadow-color) 0px 3px 8px;
+  text-align: center;
 
   & h3 {
     margin-bottom: 20px;
@@ -70,23 +69,14 @@ const FormItem = styled.div`
   align-items: center;
 
   & label {
-    width: 120px;
+    width: 10em;
     text-align: right;
     padding-right: 10px;
     box-sizing: border-box;
   }
 
   & input {
-    width: 300px;
-    /* text-align: left; */
-    /* padding-right: 10px; */
-    /* box-sizing: border-box; */
-    /* border: none; */
-    /* border-bottom: 1px solid black 0.4; */
-
-    ::-webkit-input-placeholder {font-style: italic}
-    :-moz-placeholder {font-style: italic}
-    :-ms-input-placeholder {font-style: italic}
+    width: 10em;
 
     &:focus, &:active {
       /* border: 1px solid red; */

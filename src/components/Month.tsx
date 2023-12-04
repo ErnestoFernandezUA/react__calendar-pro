@@ -71,6 +71,7 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
   const monthName = useRef(new Date(interval[0]).getMonth());
   const countEmptyItem = useRef((new Date(interval[0]).getDay()
   + 7 - IS_MONDAY_FIRST_DAY_OF_WEEK) % 7);
+
   const empty = [];
 
   for (let i = 0; i < countEmptyItem.current; i += 1) {
@@ -97,6 +98,10 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
     }
   };
 
+  const preparedWeek = IS_MONDAY_FIRST_DAY_OF_WEEK
+    ? WEEK.slice(1).concat(WEEK[0])
+    : WEEK;
+
   return (
     <Wrapper format={format}>
       <MonthTitle format={format}>
@@ -109,7 +114,7 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
             {MONTH_NAMES[monthName.current]}
           </button>
         ) : (
-          WEEK.map(d => (
+          preparedWeek.map(d => (
             <div key={d}>{d}</div>
           ))
         )}

@@ -25,11 +25,12 @@ enum ActionSelect {
   PopValue = 'pop-value',
 }
 
-interface ControlsProps {
+interface ControlsSelectProps {
   className?: string;
 }
 
-export const Controls: React.FC<ControlsProps> = ({ className }) => {
+export const ControlsSelect: React.FC<ControlsSelectProps>
+= ({ className }) => {
   const dispatch = useAppDispatch();
   const selectedCountries = useAppSelector(selectSelectedCountries);
   const allData = useAppSelector(selectAllData);

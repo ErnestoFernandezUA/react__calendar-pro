@@ -21,6 +21,10 @@ export const useDay = (value: number) => {
   const fullNameDayOfWeek = WEEK[date.getDay()];
   const stringDate = date.toDateString();
 
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const weekOfYear = Math.ceil((((date.getTime() - firstDayOfYear.getTime())
+   / 86400000) + firstDayOfYear.getDay() + 1) / 7);
+
   return {
     dayOfWeek,
     month,
@@ -30,5 +34,6 @@ export const useDay = (value: number) => {
     isLastDayOfMonth: isLastDayOfMonth(date),
     isFirstDayOfMonth: isFirstDayOfMonth(date),
     stringDate,
+    weekOfYear,
   };
 };

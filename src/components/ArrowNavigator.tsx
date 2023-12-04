@@ -1,19 +1,19 @@
-import { FunctionComponent } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { IoCaretBackOutline, IoCaretForwardOutline } from 'react-icons/io5';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
+  navigateDay,
   navigateMonth,
+  navigateWeek,
   navigateYear,
   selectCurrentDate,
   selectFormat,
-  setFormat,
   setIntervalCalendar,
 } from '../store/features/interval/intervalSlice';
 import { FORMAT } from '../utils/constants/FORMAT';
-import { MONTH_NAMES } from '../utils/constants/MONTH';
 import { MOVE } from '../utils/constants/MOVE';
+import { useDay } from '../hooks/useDay';
 
 const Wrapper = styled.div`
   display: flex;`;
@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 const Arrow = styled.button`
   padding: 0;
   border: none;
-  /* background-color: transparent; */
   outline: none;
   display: inline-flex;
   flex-direction: row;
@@ -29,28 +28,29 @@ const Arrow = styled.button`
 `;
 
 const Value = styled.div<{ format: string }>`
-  width: 160px;
-
-  ${({ format }) => format === FORMAT.YEAR
-    && css`
-      width: 60px;
-    `}
+  padding: 0 1em;
+  text-align: center;
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ArrowNavigatorProps {}
-
-export const ArrowNavigator: FunctionComponent<ArrowNavigatorProps> = () => {
+export const ArrowNavigator: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentDate = useAppSelector(selectCurrentDate);
   const format = useAppSelector(selectFormat);
-  const fullNameMonth = MONTH_NAMES[new Date(currentDate).getMonth()];
-  const fullYear = new Date(currentDate).getFullYear();
+  const {
+    day, weekOfYear, month, year,
+  } = useDay(currentDate);
 
   const onNavigateHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (format !== FORMAT.YEAR) {
+    if (format === FORMAT.DAY) {
+      dispatch(navigateDay(e.currentTarget.value));
+    }
+
+    if (format === FORMAT.WEEK) {
+      dispatch(navigateWeek(e.currentTarget.value));
+    }
+
+    if (format === FORMAT.MONTH) {
       dispatch(navigateMonth(e.currentTarget.value));
-      dispatch(setFormat(FORMAT.MONTH));
     }
 
     if (format === FORMAT.YEAR) {
@@ -69,17 +69,42 @@ export const ArrowNavigator: FunctionComponent<ArrowNavigatorProps> = () => {
       >
         <IoCaretBackOutline />
       </Arrow>
+
       <Value format={format}>
-        {format !== FORMAT.YEAR && (
+        {format === FORMAT.DAY && (
           <>
+            {day}
             &nbsp;
-            {fullNameMonth}
+            {month}
+            &nbsp;
+            {year}
           </>
         )}
-        &nbsp;
-        {fullYear}
-        &nbsp;
+
+        {format === FORMAT.WEEK && (
+          <>
+            {weekOfYear}
+            -th week of&nbsp;
+            {year}
+          </>
+        )}
+
+        {format === FORMAT.MONTH && (
+          <>
+            {month}
+            &nbsp;
+            {year}
+          </>
+        )}
+
+        {format === FORMAT.YEAR && (
+          <>
+            &nbsp;
+            {year}
+          </>
+        )}
       </Value>
+
       <Arrow
         type="button"
         value={MOVE.FORWARD}

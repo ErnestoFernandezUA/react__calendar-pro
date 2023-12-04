@@ -10,7 +10,7 @@ import { FORMAT } from '../../../utils/constants/FORMAT';
 // import { FormatValue } from '../../../type/Format';
 // import { Todo } from '../../../type/Todo';
 
-export const IS_MONDAY_FIRST_DAY_OF_WEEK = 1;
+export const IS_MONDAY_FIRST_DAY_OF_WEEK = 0;
 
 export interface IntervalState {
   currentDate: number;
@@ -65,6 +65,34 @@ const intervalSlice = createSlice({
 
       // eslint-disable-next-line no-console
       console.log('setFormat', state.formatCalendar);
+    },
+    navigateDay: (
+      state: IntervalState,
+      action: PayloadAction<string>,
+    ) => {
+      // eslint-disable-next-line no-console
+      console.log('navigateDay', action.payload);
+
+      state.currentDate = new Date(
+        new Date(state.currentDate).getFullYear(),
+        new Date(state.currentDate).getMonth(),
+        new Date(state.currentDate).getDate()
+        + Number(action.payload),
+      ).valueOf();
+    },
+    navigateWeek: (
+      state: IntervalState,
+      action: PayloadAction<string>,
+    ) => {
+      // eslint-disable-next-line no-console
+      console.log('navigateWeek', action.payload);
+
+      state.currentDate = new Date(
+        new Date(state.currentDate).getFullYear(),
+        new Date(state.currentDate).getMonth(),
+        new Date(state.currentDate).getDate()
+        + Number(action.payload) * 7,
+      ).valueOf();
     },
     navigateMonth: (
       state: IntervalState,
@@ -236,6 +264,8 @@ export const {
   setCurrentDate,
   setSpecialDate,
   setFormat,
+  navigateDay,
+  navigateWeek,
   navigateMonth,
   navigateYear,
   setIntervalCalendar,

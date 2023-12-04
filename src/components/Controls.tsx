@@ -3,11 +3,6 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
-// import {
-//   closeAllPopup,
-//   selectIsShowDatePicker,
-//   switchPopup,
-// } from '../store/features/Controls/controlsSlice';
 import {
   selectCurrentDate,
   selectFormat,
@@ -17,11 +12,7 @@ import {
 } from '../store/features/interval/intervalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ArrowNavigator } from './ArrowNavigator';
-// import { DatePicker } from '../UI/DatePicker/DatePicker';
-// import { FormParentControl } from '../UI/Form/FormParentControl';
-// import { Button } from '../UI/Button';
 import { resetStateTodos } from '../store/features/todos/todosSlice';
-import { MONTH_NAMES } from '../utils/constants/MONTH';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { POPUP } from '../utils/constants/POPUP';
 import { Button } from './UI/Button';
@@ -32,6 +23,7 @@ import {
   selectIsShowDatePicker,
   switchPopup,
 } from '../store/features/controls/controlsSlice';
+import { FormatValue } from '../types/format';
 
 const Wrapper = styled.div`
   max-width: 1200px;
@@ -42,8 +34,9 @@ const Wrapper = styled.div`
   padding: 10px;
 `;
 
-const Back = styled.div<{ format: string }>`
-  cursor: pointer;
+const FormatChanger = styled.div`
+  display: flex;
+  gap: 1em;
 `;
 
 const ControlsNavigate = styled.div`
@@ -56,28 +49,14 @@ export const Controls: FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const currentDate = useAppSelector(selectCurrentDate);
   const format = useAppSelector(selectFormat);
-  const fullNameMonth = MONTH_NAMES[new Date(currentDate).getMonth()];
-  const fullYear = new Date(currentDate).getFullYear();
   const isShowDatePickerContainer = useAppSelector(selectIsShowDatePicker);
 
-  const onGoToPrevFormat = () => {
-    if (format === FORMAT.YEAR) {
+  const setIntervalHandler = (value: FormatValue) => {
+    if (format === value) {
       return;
     }
 
-    switch (format) {
-      case FORMAT.DAY:
-      case FORMAT.WEEK:
-        dispatch(setFormat(FORMAT.MONTH));
-        break;
-
-      case FORMAT.MONTH:
-        dispatch(setFormat(FORMAT.YEAR));
-        break;
-
-      default:
-    }
-
+    dispatch(setFormat(value));
     dispatch(setIntervalCalendar());
   };
 
@@ -94,19 +73,26 @@ export const Controls: FunctionComponent = () => {
 
   return (
     <Wrapper>
-      <Back
-        format={format}
-        onClick={onGoToPrevFormat}
-      >
-        {(format === FORMAT.DAY || format === FORMAT.WEEK) && fullNameMonth}
-        {(format === FORMAT.MONTH || format === FORMAT.YEAR) && fullYear}
-      </Back>
+      <FormatChanger>
+        <Button type="button" onClick={() => setIntervalHandler(FORMAT.YEAR)}>
+          Year
+        </Button>
+        <Button type="button" onClick={() => setIntervalHandler(FORMAT.MONTH)}>
+          Month
+        </Button>
+        <Button type="button" onClick={() => setIntervalHandler(FORMAT.WEEK)}>
+          Week
+        </Button>
+        <Button type="button" onClick={() => setIntervalHandler(FORMAT.DAY)}>
+          Day
+        </Button>
+      </FormatChanger>
+
+      <FormParentControl />
 
       <Button type="button" onClick={() => dispatch(resetStateTodos())}>
         reset todos
       </Button>
-
-      <FormParentControl />
 
       <ControlsNavigate>
         <ArrowNavigator />

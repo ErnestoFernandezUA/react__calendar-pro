@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Button = styled.button`
+  font-family: inherit;
   /* padding: 0;
   margin: 0;
   border: none;

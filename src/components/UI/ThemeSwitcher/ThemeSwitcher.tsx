@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { IoSunnyOutline, IoMoon } from 'react-icons/io5';
+import { Tooltip } from 'react-tooltip';
 
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import {
@@ -14,6 +15,7 @@ const Wrapper = styled.label`
   align-items: center;
   gap: 0.8em;
   user-select: none;
+  cursor: pointer;
 `;
 
 const Invisible = styled.input`
@@ -51,10 +53,28 @@ export const ThemeSwitcher: React.FC = () => {
   = () => dispatch(setTheme(isDark ? Theme.LIGHT : Theme.DARK));
 
   return (
-    <Wrapper>
+    <Wrapper className="Wrapper">
       {theme === Theme.SYSTEM && 'System'}
       {theme === Theme.DARK && 'Dark'}
       {theme === Theme.LIGHT && 'Light'}
+
+      <Tooltip
+        anchorSelect=".Wrapper"
+        place="left-start"
+        delayShow={300}
+        delayHide={1000}
+        style={{
+          zIndex: 12000,
+          backgroundColor: 'var(--primary-text-color)',
+          color: 'var(--background-color)',
+        }}
+      >
+        <div>
+          <h3>Choose a theme</h3>
+          <p>System settings are set by default</p>
+          <p>Use a toggle switch to choose the theme, please</p>
+        </div>
+      </Tooltip>
 
       <Invisible type="checkbox" checked={isDark} onChange={themeHandler} />
 
