@@ -1,4 +1,5 @@
 import {
+  ChangeEvent,
   FunctionComponent,
   useRef,
 } from 'react';
@@ -16,9 +17,9 @@ import { FORMAT } from '../utils/constants/FORMAT';
 import { Todo } from '../types/todo';
 import {
   sentTodoToForm,
-  switchPopup,
+  // switchPopup,
 } from '../store/features/controls/controlsSlice';
-import { POPUP } from '../utils/constants/POPUP';
+// import { POPUP } from '../utils/constants/POPUP';
 import { deleteTodo } from '../store/features/todos/todosSlice';
 import { Button } from './UI/Button';
 
@@ -90,17 +91,17 @@ export const Todos: FunctionComponent<TodosProps> = ({ todos }) => {
   );
 
   const isShowDots = (format === FORMAT.MONTH) && todos.length > 4;
-  const onShowFormHandler = (
-    e: React.MouseEvent<HTMLDivElement>,
-    todo: Todo,
-  ) => {
-    // eslint-disable-next-line no-console
-    console.log('onShowFormHandler');
-    e.stopPropagation();
+  // const onShowFormHandler = (
+  //   e: React.MouseEvent<HTMLDivElement>,
+  //   todo: Todo,
+  // ) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('onShowFormHandler');
+  //   e.stopPropagation();
 
-    dispatch(sentTodoToForm(todo));
-    dispatch(switchPopup(POPUP.IS_SHOW_FORM));
-  };
+  //   dispatch(sentTodoToForm(todo));
+  //   dispatch(switchPopup(POPUP.IS_SHOW_FORM));
+  // };
 
   const deleteTodoHandler = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -109,6 +110,16 @@ export const Todos: FunctionComponent<TodosProps> = ({ todos }) => {
     e.stopPropagation();
 
     dispatch(deleteTodo(todoId));
+  };
+
+  const onChangeTodo = (e: ChangeEvent<HTMLInputElement>, todo: Todo) => {
+    // eslint-disable-next-line no-console
+    console.log(e.target.value);
+
+    dispatch(sentTodoToForm({
+      ...todo,
+      title: e.target.value,
+    }));
   };
 
   return (
@@ -123,9 +134,16 @@ export const Todos: FunctionComponent<TodosProps> = ({ todos }) => {
               <TodoTitle
                 color={todo.color}
                 format={format}
-                onClick={(e) => onShowFormHandler(e, todo)}
+                // onClick={(e) => onShowFormHandler(e, todo)}
               >
-                <span>{todo.title}</span>
+                {/* <span>{todo.title}</span> */}
+
+                <input
+                  type="text"
+                  value={todo.title}
+                  name={todo.todoId}
+                  onChange={e => onChangeTodo(e, todo)}
+                />
 
                 <Button
                   type="button"

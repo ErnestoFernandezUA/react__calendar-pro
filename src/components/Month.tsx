@@ -32,8 +32,6 @@ const Wrapper = styled.div<{ format?: string }>`
 `;
 
 const MonthTitle = styled.div<{ format?: string }>`
-  cursor: pointer;
-
   ${({ format }) => (format === FORMAT.DAY) && css`
     display: none;
   `}
@@ -50,7 +48,6 @@ const MonthTitle = styled.div<{ format?: string }>`
   `}
 
   & button {
-    /* background-color: transparent; */
     cursor: pointer;
   }
 `;

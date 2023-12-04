@@ -19,6 +19,7 @@ import { FORMAT } from '../utils/constants/FORMAT';
 import { useCurrent } from '../hooks/useCurrent';
 import { Todo } from '../types/todo';
 import { useDay } from '../hooks/useDay';
+import { closeAllPopup } from '../store/features/controls/controlsSlice';
 
 type StyledProps = {
   format?: string,
@@ -32,6 +33,7 @@ const Wrapper = styled.div<StyledProps>`
   box-sizing: border-box;
   padding: 0;
   font-size: 14px;
+  cursor: pointer;
 
 
   ${({ format }) => (format === FORMAT.DAY) && css`
@@ -85,7 +87,11 @@ const DayTitle = styled.div<{ isCurrentDay: boolean }>`
   `}
 `;
 
+const DayBody = styled.div`
+`;
+
 const DayOfWeek = styled.button<StyledProps>`
+  display: none;
   cursor: pointer;
   padding: 0 10px;
   line-height: 30px;
@@ -114,9 +120,9 @@ const DayOfWeek = styled.button<StyledProps>`
     }
   `}
 
-  ${({ format }) => (format === FORMAT.YEAR)
+  ${({ format }) => (format === FORMAT.DAY)
   && css`
-    display: none;
+    display: block;
   `}
 `;
 
@@ -156,6 +162,8 @@ export const Day: FunctionComponent<DayProps> = ({
   || new Date(startDay).getDay() === 6);
   const {
     dayOfWeek, month, day, year, fullNameDayOfWeek,
+    isFirstDayOfMonth,
+    isLastDayOfMonth,
   } = useDay(startDay);
   const {
     isCurrentDay,
@@ -171,9 +179,6 @@ export const Day: FunctionComponent<DayProps> = ({
   const isTodosToday = !!preparedTodos.length;
 
   const onDayClick = () => {
-    // eslint-disable-next-line no-console
-    // console.log('Day onClick');
-
     if (isCurrentDay && format === FORMAT.DAY) {
       return;
     }
@@ -215,11 +220,18 @@ export const Day: FunctionComponent<DayProps> = ({
     }
   };
 
+  const onDayBodyClick = () => {
+    dispatch(closeAllPopup());
+  };
+
   if (disabled) {
     return (
       <div />
     );
   }
+
+  // eslint-disable-next-line no-console
+  console.log(day, dayOfWeek);
 
   return (
     <Wrapper
@@ -245,15 +257,26 @@ export const Day: FunctionComponent<DayProps> = ({
         </DayOfWeek>
 
         <DateString format={format}>
-          {format === FORMAT.DAY ? `${day}/${month}/${year}` : day}
+          {format === FORMAT.DAY
+            ? `${day}/${month}/${year}`
+            : `${day}`}
+
+          {(isFirstDayOfMonth || isLastDayOfMonth)
+            && (format === FORMAT.MONTH || format === FORMAT.WEEK)
+            && ` ${month}`}
+
+          &nbsp;
+          {day + dayOfWeek}
         </DateString>
       </DayTitle>
 
-      {(format !== FORMAT.YEAR) && isTodosToday && (
-        <DayListTodos format={format}>
-          <Todos todos={preparedTodos} />
-        </DayListTodos>
-      )}
+      <DayBody onClick={onDayBodyClick}>
+        {(format !== FORMAT.YEAR) && isTodosToday && (
+          <DayListTodos format={format}>
+            <Todos todos={preparedTodos} />
+          </DayListTodos>
+        )}
+      </DayBody>
     </Wrapper>
   );
 };
