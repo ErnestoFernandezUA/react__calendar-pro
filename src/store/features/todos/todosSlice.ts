@@ -3,10 +3,10 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
 import todos from '../../../server/todos.json';
-import { Todo } from '../../../types/todo';
+import { TodoType } from '../../../types/todo';
 
 export interface TodosState {
-  storage: Todo[];
+  storage: TodoType[];
   statusLoading: 'idle' | 'loading' | 'failed';
   error: unknown;
 }
@@ -17,10 +17,10 @@ const initialState: TodosState = {
   error: null,
 };
 
-const getTodos = async (delay = 3000): Promise<Todo[]> => {
+const getTodos = async (delay = 3000): Promise<TodoType[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(todos as unknown as Todo[]);
+      resolve(todos as unknown as TodoType[]);
     }, delay);
   });
 };
@@ -28,7 +28,7 @@ const getTodos = async (delay = 3000): Promise<Todo[]> => {
 export const getTodosAsync = createAsyncThunk(
   'todos/fetchTodos',
   async () => {
-    const response: Todo[] = await getTodos();
+    const response: TodoType[] = await getTodos();
 
     // eslint-disable-next-line no-console
     console.log(response);
@@ -41,12 +41,12 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state: TodosState, action: PayloadAction<Todo>) => {
+    addTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
       state.storage.push(action.payload);
     },
     changeTodo: (
       state: TodosState,
-      action: PayloadAction<{ todoId: string, todo: Todo }>,
+      action: PayloadAction<{ todoId: string, todo: TodoType }>,
     ) => {
       state.storage = state.storage.map(todo => {
         if (todo.todoId === action.payload.todoId) {
@@ -69,7 +69,7 @@ const todosSlice = createSlice({
     },
     deleteTodo: (state: TodosState, action: PayloadAction<string>) => {
       // eslint-disable-next-line no-console
-      console.log('deleteTodos');
+      console.log('deleteTodo');
 
       state.storage
       = state.storage.filter(todo => todo.todoId !== action.payload);

@@ -1,4 +1,4 @@
-export type Todo = {
+export type TodoType = {
   todoId: string;
   title: string;
   description: string;

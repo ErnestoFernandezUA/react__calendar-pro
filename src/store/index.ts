@@ -34,7 +34,7 @@ const persistConfig = {
   key: 'root',
   storage,
   whitelist: [
-    'cash', 'controls', 'options',
+    'cash', 'controls', 'options', 'interval',
   ],
   blacklist: ['user'],
 };

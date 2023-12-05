@@ -40,6 +40,7 @@ const MonthTitle = styled.div<{ format?: string }>`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     justify-items: center;
+
     margin-bottom: 10px;
   `}
 

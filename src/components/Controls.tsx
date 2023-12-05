@@ -26,12 +26,9 @@ import {
 import { FormatValue } from '../types/format';
 
 const Wrapper = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
 `;
 
 const FormatChanger = styled.div`

@@ -2,8 +2,15 @@ import { styled } from 'styled-components';
 import { Controls } from '../Controls';
 import { ThemeSwitcher } from '../UI/ThemeSwitcher/ThemeSwitcher';
 
-const TitleBox = styled.div`
+const Wrapper = styled.header`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
   padding: 1em;
+`;
+
+const TitleBox = styled.div`
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
@@ -12,7 +19,7 @@ const TitleBox = styled.div`
 
 export const Header: React.FC = () => {
   return (
-    <header>
+    <Wrapper>
       <TitleBox>
         <h1>Calendar PRO MAX</h1>
 
@@ -20,6 +27,6 @@ export const Header: React.FC = () => {
       </TitleBox>
 
       <Controls />
-    </header>
+    </Wrapper>
   );
 };

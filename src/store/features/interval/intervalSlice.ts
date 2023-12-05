@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
-import { Todo } from '../../../types/todo';
+import { TodoType } from '../../../types/todo';
 import { FormatValue } from '../../../types/format';
 import { FORMAT } from '../../../utils/constants/FORMAT';
 // import { FORMAT } from '../../../constants/FORMAT';
@@ -17,8 +17,9 @@ export interface IntervalState {
   start: number;
   end: number;
 
-  storage: Todo[];
+  storage: TodoType[];
   formatCalendar: FormatValue;
+  activeTodo: TodoType | null;
 }
 
 const initialState: IntervalState = {
@@ -28,6 +29,7 @@ const initialState: IntervalState = {
 
   storage: [],
   formatCalendar: FORMAT.MONTH,
+  activeTodo: null,
 };
 
 export const getIntervalAsync = createAsyncThunk(
@@ -53,7 +55,7 @@ const intervalSlice = createSlice({
     },
     setSpecialDate: (
       state: IntervalState,
-      action,
+      action: PayloadAction<number>,
     ) => {
       state.currentDate = new Date(action.payload).valueOf();
     },
@@ -234,8 +236,22 @@ const intervalSlice = createSlice({
         default:
       }
     },
-    addTodo: (state: IntervalState, action: PayloadAction<Todo>) => {
+    addTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
       state.storage.push(action.payload);
+    },
+    saveTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
+      state.storage = [...state.storage
+        .filter(t => t.todoId !== action.payload.todoId), action.payload];
+    },
+    deleteTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
+      state.storage = state.storage
+        .filter(t => t.todoId !== action.payload.todoId);
+    },
+    setActiveTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
+      state.activeTodo = action.payload;
+    },
+    clearActiveTodo: (state: IntervalState) => {
+      state.activeTodo = null;
     },
     resetState: (state: IntervalState) => {
       return { ...state, ...initialState };
@@ -270,6 +286,10 @@ export const {
   navigateYear,
   setIntervalCalendar,
   addTodo,
+  saveTodo,
+  deleteTodo,
+  setActiveTodo,
+  clearActiveTodo,
   resetState,
 } = intervalSlice.actions;
 
@@ -283,3 +303,5 @@ export const selectEndInterval
 
 export const selectFormat
 = (state: RootState) => state.interval.formatCalendar;
+export const selectActiveTodo
+= (state: RootState) => state.interval.activeTodo;

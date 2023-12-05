@@ -3,7 +3,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
-import { Todo } from '../../../types/todo';
+import { TodoType } from '../../../types/todo';
 import { PopupValues } from '../../../types/popup';
 
 export interface ControlsState {
@@ -11,7 +11,7 @@ export interface ControlsState {
     isShowDatePicker: boolean;
     isShowForm: boolean;
   },
-  todo: Todo | null;
+  todo: TodoType | null;
 }
 
 const initialState: ControlsState = {
@@ -44,7 +44,7 @@ const controlsSlice = createSlice({
     },
     sentTodoToForm: (
       state: ControlsState,
-      action: PayloadAction<Todo>,
+      action: PayloadAction<TodoType>,
     ) => {
       state.todo = action.payload;
     },
