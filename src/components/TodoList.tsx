@@ -35,7 +35,6 @@ const Wrapper = styled.div`
 //   flex-direction: row;
 //   align-items: stretch;
 
-
 //   & div {
 //     margin-bottom: 4px;
 //     /* max-width: 100px; */
