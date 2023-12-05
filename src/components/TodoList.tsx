@@ -15,10 +15,6 @@ import { selectFormat } from '../store/features/interval/intervalSlice';
 import { useAppSelector } from '../store/hooks';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
-import {
-  // sentTodoToForm,
-  // switchPopup,
-} from '../store/features/controls/controlsSlice';
 // import { POPUP } from '../utils/constants/POPUP';
 // import { deleteTodo } from '../store/features/todos/todosSlice';
 // import { Button } from './UI/Button';
