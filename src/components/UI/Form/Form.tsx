@@ -22,7 +22,6 @@ import {
   switchPopup,
 } from '../../../store/features/controls/controlsSlice';
 import {
-  addTodo,
   selectCurrentDate,
 } from '../../../store/features/interval/intervalSlice';
 import {
@@ -37,7 +36,7 @@ import { TimePicker } from '../TimePicker/TimePicker';
 import { FormDataType } from '../../../types/form';
 import { ColorKeys } from '../../../types/color';
 import { POPUP } from '../../../utils/constants/POPUP';
-import { changeTodo } from '../../../store/features/todos/todosSlice';
+import { saveTodo } from '../../../store/features/todos/todosSlice';
 // import { POPUP } from '../../constants/POPUP';
 // import { changeTodo } from '../../store/features/Todo/todoSlice';
 
@@ -182,12 +181,7 @@ export const Form: FunctionComponent<FormProps>
       todoId: `${new Date().valueOf()}`,
     };
 
-    if (todo) {
-      dispatch(changeTodo({ todoId: todo.todoId, todo: newTodo }));
-    } else {
-      dispatch(addTodo(newTodo));
-    }
-
+    dispatch(saveTodo(newTodo));
     dispatch(switchPopup(POPUP.IS_SHOW_FORM));
   };
 

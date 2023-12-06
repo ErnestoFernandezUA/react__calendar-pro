@@ -19,10 +19,10 @@ const Wrapper = styled.label`
 `;
 
 const Invisible = styled.input`
-  display: none;
+  visibility: hidden;
 `;
 
-const Switcher = styled.div<{ isDark: boolean }>`
+const Switcher = styled.div<{ $isDark: boolean; }>`
   height: 1.6em;
   width: 3.2em;
   background-color: var(--primary-text-color);
@@ -30,7 +30,7 @@ const Switcher = styled.div<{ isDark: boolean }>`
   cursor: pointer;
   transition: 0.5s;
   display: flex;
-  padding-left: ${({ isDark }) => (isDark ? '1.6em' : '0')};
+  padding-left: ${({ $isDark }) => ($isDark ? '1.6em' : '0')};
   box-sizing: border-box;
 `;
 
@@ -78,7 +78,7 @@ export const ThemeSwitcher: React.FC = () => {
 
       <Invisible type="checkbox" checked={isDark} onChange={themeHandler} />
 
-      <Switcher isDark={isDark}>
+      <Switcher $isDark={isDark}>
         <Icon>
           {isDark
             ? <IoMoon size="80%" color="var(--primary-text-color)" />

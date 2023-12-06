@@ -9,12 +9,16 @@ export interface TodosState {
   storage: TodoType[];
   statusLoading: 'idle' | 'loading' | 'failed';
   error: unknown;
+
+  activeTodo: TodoType | null;
 }
 
 const initialState: TodosState = {
   storage: [],
   statusLoading: 'idle',
   error: null,
+
+  activeTodo: null,
 };
 
 const getTodos = async (delay = 3000): Promise<TodoType[]> => {
@@ -44,17 +48,32 @@ const todosSlice = createSlice({
     addTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
       state.storage.push(action.payload);
     },
-    changeTodo: (
-      state: TodosState,
-      action: PayloadAction<{ todoId: string, todo: TodoType }>,
-    ) => {
-      state.storage = state.storage.map(todo => {
-        if (todo.todoId === action.payload.todoId) {
-          return action.payload.todo;
-        }
+    // changeTodo: (
+    //   state: TodosState,
+    //   action: PayloadAction<{ todoId: string, todo: TodoType }>,
+    // ) => {
+    //   state.storage = state.storage.map(todo => {
+    //     if (todo.todoId === action.payload.todoId) {
+    //       return action.payload.todo;
+    //     }
 
-        return todo;
-      });
+    //     return todo;
+    //   });
+    // },
+
+    saveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
+      state.storage = [...state.storage
+        .filter(t => t.todoId !== action.payload.todoId), action.payload];
+    },
+    deleteTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
+      state.storage = state.storage
+        .filter(t => t.todoId !== action.payload.todoId);
+    },
+    setActiveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
+      state.activeTodo = action.payload;
+    },
+    clearActiveTodo: (state: TodosState) => {
+      state.activeTodo = null;
     },
     randomizeTodos: (
       // state: TodosState, action: PayloadAction<Todo>,
@@ -66,13 +85,6 @@ const todosSlice = createSlice({
 
       //   return todo;
       // });
-    },
-    deleteTodo: (state: TodosState, action: PayloadAction<string>) => {
-      // eslint-disable-next-line no-console
-      console.log('deleteTodo');
-
-      state.storage
-      = state.storage.filter(todo => todo.todoId !== action.payload);
     },
     setStatus: (
       state: TodosState,
@@ -112,7 +124,10 @@ const todosSlice = createSlice({
 export default todosSlice.reducer;
 export const {
   addTodo,
-  changeTodo,
+  // changeTodo,
+  saveTodo,
+  setActiveTodo,
+  clearActiveTodo,
   deleteTodo,
   setStatus,
   setError,
@@ -123,3 +138,5 @@ export const selectTodos = (state: RootState) => state.todos.storage;
 export const selectTodosStatusLoading
 = (state: RootState) => state.todos.statusLoading;
 export const selectTodosError = (state: RootState) => state.todos.error;
+export const selectActiveTodo
+= (state: RootState) => state.todos.activeTodo;

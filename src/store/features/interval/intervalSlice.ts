@@ -3,12 +3,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
-import { TodoType } from '../../../types/todo';
 import { FormatValue } from '../../../types/format';
 import { FORMAT } from '../../../utils/constants/FORMAT';
-// import { FORMAT } from '../../../constants/FORMAT';
-// import { FormatValue } from '../../../type/Format';
-// import { Todo } from '../../../type/Todo';
 
 export const IS_MONDAY_FIRST_DAY_OF_WEEK = 0;
 
@@ -17,9 +13,7 @@ export interface IntervalState {
   start: number;
   end: number;
 
-  storage: TodoType[];
   formatCalendar: FormatValue;
-  activeTodo: TodoType | null;
 }
 
 const initialState: IntervalState = {
@@ -27,9 +21,7 @@ const initialState: IntervalState = {
   start: 0,
   end: 0,
 
-  storage: [],
   formatCalendar: FORMAT.MONTH,
-  activeTodo: null,
 };
 
 export const getIntervalAsync = createAsyncThunk(
@@ -236,23 +228,6 @@ const intervalSlice = createSlice({
         default:
       }
     },
-    addTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
-      state.storage.push(action.payload);
-    },
-    saveTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
-      state.storage = [...state.storage
-        .filter(t => t.todoId !== action.payload.todoId), action.payload];
-    },
-    deleteTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
-      state.storage = state.storage
-        .filter(t => t.todoId !== action.payload.todoId);
-    },
-    setActiveTodo: (state: IntervalState, action: PayloadAction<TodoType>) => {
-      state.activeTodo = action.payload;
-    },
-    clearActiveTodo: (state: IntervalState) => {
-      state.activeTodo = null;
-    },
     resetState: (state: IntervalState) => {
       return { ...state, ...initialState };
     },
@@ -285,15 +260,9 @@ export const {
   navigateMonth,
   navigateYear,
   setIntervalCalendar,
-  addTodo,
-  saveTodo,
-  deleteTodo,
-  setActiveTodo,
-  clearActiveTodo,
   resetState,
 } = intervalSlice.actions;
 
-export const selectTodos = (state: RootState) => state.interval.storage;
 export const selectCurrentDate
 = (state: RootState) => state.interval.currentDate;
 export const selectStartInterval
@@ -303,5 +272,3 @@ export const selectEndInterval
 
 export const selectFormat
 = (state: RootState) => state.interval.formatCalendar;
-export const selectActiveTodo
-= (state: RootState) => state.interval.activeTodo;

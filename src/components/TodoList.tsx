@@ -75,53 +75,34 @@ const Wrapper = styled.div`
 
 interface TodoListProps {
   todos: TodoType[];
+  isCreatingNewTodo: boolean;
+  setIsCreatingNewTodo: (value: boolean) => void;
 }
 
-export const TodoList: FunctionComponent<TodoListProps> = ({ todos }) => {
+export const TodoList: FunctionComponent<TodoListProps> = ({
+  todos,
+  isCreatingNewTodo,
+  setIsCreatingNewTodo,
+}) => {
   // const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
   const todoRef = useRef<HTMLDivElement>(null);
 
-  const preparedTodos = todos.filter(
-    (_, i) => ((format === FORMAT.MONTH) ? i < 4 : true),
-  );
+  const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
+    ? i < 4 : true));
 
   const isShowDots = (format === FORMAT.MONTH) && todos.length > 4;
-  // const onShowFormHandler = (
-  //   e: React.MouseEvent<HTMLDivElement>,
-  //   todo: Todo,
-  // ) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('onShowFormHandler');
-  //   e.stopPropagation();
-
-  //   dispatch(sentTodoToForm(todo));
-  //   dispatch(switchPopup(POPUP.IS_SHOW_FORM));
-  // };
-
-  // const deleteTodoHandler = (
-  //   e: React.MouseEvent<HTMLButtonElement>,
-  //   todoId: string,
-  // ) => {
-  //   e.stopPropagation();
-
-  //   dispatch(deleteTodo(todoId));
-  // };
-
-  // const onChangeTodo = (e: ChangeEvent<HTMLInputElement>, todo: Todo) => {
-  //   // eslint-disable-next-line no-console
-  //   console.log(e.target.value);
-
-  //   dispatch(sentTodoToForm({
-  //     ...todo,
-  //     title: e.target.value,
-  //   }));
-  // };
+  const toFinishCreating = () => setIsCreatingNewTodo(false);
 
   return (
     <Wrapper ref={todoRef}>
-      {preparedTodos.map(todo => (
-        <Todo key={todo.todoId} todo={todo} />
+      {shortedListTodos.map((todo, i) => (
+        <Todo
+          key={todo.todoId}
+          todo={todo}
+          toFinishCreating={toFinishCreating}
+          isNewTodo={isCreatingNewTodo && i === 0}
+        />
       ))}
 
       {isShowDots && <IoEllipsisHorizontal />}

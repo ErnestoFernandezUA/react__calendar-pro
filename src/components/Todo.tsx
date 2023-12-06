@@ -1,39 +1,35 @@
 import {
   ChangeEvent,
   FunctionComponent,
+  useEffect,
   useRef,
   useState,
 } from 'react';
 import styled, { css } from 'styled-components';
 import {
-  // IoEllipsisHorizontal,
-  // IoClose,
-  // IoBuild,
   IoCart,
 } from 'react-icons/io5';
+
+import {
+  selectFormat,
+} from '../store/features/interval/intervalSlice';
 
 import {
   clearActiveTodo,
   deleteTodo,
   saveTodo,
   selectActiveTodo,
-  selectFormat,
   setActiveTodo,
-} from '../store/features/interval/intervalSlice';
+} from '../store/features/todos/todosSlice';
+
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
-import {
-// sentTodoToForm,
-// switchPopup,
-} from '../store/features/controls/controlsSlice';
-// import { POPUP } from '../utils/constants/POPUP';
 import { Button } from './UI/Button';
 import { FORM_DATA } from '../utils/constants/FORM_DATA';
 
 const Wrapper = styled.div<{ color: string }>`
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
   font-size: 0.8em;
 `;
@@ -77,14 +73,24 @@ const TodoBody = styled.div`
 
 interface TodosProps {
   todo: TodoType;
+  toFinishCreating: () => void;
+  isNewTodo: boolean;
 }
 
-export const Todo: FunctionComponent<TodosProps> = ({ todo }) => {
+export const Todo: FunctionComponent<TodosProps> = ({
+  todo, toFinishCreating, isNewTodo,
+}) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState<TodoType>(todo);
   const activeTodo = useAppSelector(selectActiveTodo);
+
+  useEffect(() => {
+    if (isNewTodo && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isNewTodo]);
 
   const handleDeleteTodo = () => {
     dispatch(deleteTodo(value));
@@ -98,7 +104,12 @@ export const Todo: FunctionComponent<TodosProps> = ({ todo }) => {
   };
 
   const handleInputSubmit = () => {
+    if (!value.title) {
+      return;
+    }
+
     dispatch(saveTodo(value));
+    toFinishCreating();
     dispatch(clearActiveTodo());
   };
 
@@ -113,12 +124,18 @@ export const Todo: FunctionComponent<TodosProps> = ({ todo }) => {
       handleInputSubmit();
       dispatch(clearActiveTodo());
     }
+
+    if (isNewTodo) {
+      toFinishCreating();
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      dispatch(saveTodo(value));
-      dispatch(clearActiveTodo());
+      // dispatch(saveTodo(value));
+      // dispatch(clearActiveTodo());
+
+      handleInputSubmit();
 
       setTimeout(() => {
         if (inputRef.current) {
