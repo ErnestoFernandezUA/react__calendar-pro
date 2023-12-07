@@ -1,6 +1,9 @@
 import {
   ChangeEvent,
+  // Dispatch,
   FunctionComponent,
+  // RefObject,
+  // SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -11,6 +14,7 @@ import {
 } from 'react-icons/io5';
 
 import {
+  selectCurrentDate,
   selectFormat,
 } from '../store/features/interval/intervalSlice';
 
@@ -27,6 +31,7 @@ import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
 import { Button } from './UI/Button';
 import { FORM_DATA } from '../utils/constants/FORM_DATA';
+import { useDay } from '../hooks/useDay';
 
 const Wrapper = styled.div<{ color: string }>`
   display: flex;
@@ -39,6 +44,7 @@ const TodoTitle = styled.div<{ color: string, format?: string }>`
   color: var(--primary-text-color);
   display: flex;
   gap: 5px;
+
 
   & input {
     width: 100%;
@@ -72,61 +78,144 @@ const TodoBody = styled.div`
 `;
 
 interface TodosProps {
-  todo: TodoType;
-  toFinishCreating: () => void;
-  isNewTodo: boolean;
+  todo?: TodoType;
+  // isNewTodo?: boolean;
+  // todosLength?: number;
+  today: number;
+
+  // setActiveInputRef:
+  // Dispatch<SetStateAction<RefObject<HTMLInputElement> | null>>;
+  // activeInputRef?: React.RefObject<HTMLInputElement> | null;
+  setIsCreating?: (value: boolean) => void;
 }
 
 export const Todo: FunctionComponent<TodosProps> = ({
-  todo, toFinishCreating, isNewTodo,
+  todo,
+  // isNewTodo,
+  // todosLength,
+  today,
+
+  // setActiveInputRef,
+  // activeInputRef,
+  setIsCreating,
 }) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState<TodoType>(todo);
   const activeTodo = useAppSelector(selectActiveTodo);
+  const currentDate = useAppSelector(selectCurrentDate);
+  const isNewTodo = !todo?.title;
+
+  const initialTodo: TodoType = {
+    todoId: `${new Date().valueOf()}`,
+    title: '',
+    description: '',
+    date: currentDate,
+    color: '',
+  };
+  const [value, setValue] = useState<TodoType>(todo || initialTodo);
+  // const isReadOnly = activeTodo?.todoId !== null
+  // && activeTodo?.todoId !== value.todoId;
+
+  const { day } = useDay(today);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // eslint-disable-next-line no-console
+  // console.log(isNewTodo);
 
   useEffect(() => {
     if (isNewTodo && inputRef.current) {
+      // eslint-disable-next-line no-console
+      console.log('focus');
+
       inputRef.current.focus();
     }
   }, [isNewTodo]);
 
+  // useEffect(() => {
+  //   if (isNewTodo) {
+  //     // eslint-disable-next-line no-console
+  //     console.log('isNewTodo setActiveInputRef(inputRef);');
+
+  //     // setActiveInputRef(inputRef);
+  //     // inputRef.current?.focus();
+  //   }
+  // }, [setActiveInputRef]);
+
+  // useEffect(() => {
+  //   const inputElement: HTMLInputElement | null
+  //    = document.querySelector(`.inputForFocus-${day}`);
+
+  //   // eslint-disable-next-line no-console
+  //   console.log('useEffect ref', day, inputElement, isNewTodo, todosLength);
+
+  //   if (inputElement) {
+  //     inputElement.focus();
+
+  //     // eslint-disable-next-line no-console
+  //     console.log('useEffect ref - FOCUS', day, inputElement.value);
+  //   }
+  // }, []);
+
   const handleDeleteTodo = () => {
+    if (!value) {
+      return;
+    }
+
     dispatch(deleteTodo(value));
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue({
-      ...todo,
+      ...value,
       [e.target.name]: e.target.value,
     });
   };
 
   const handleInputSubmit = () => {
-    if (!value.title) {
+    if (!value?.title) {
+      // eslint-disable-next-line no-console
+      console.log('handleSubmit NOT save todo');
+
       return;
     }
 
+    // eslint-disable-next-line no-console
+    console.log('handleSubmit save todo', value);
+
     dispatch(saveTodo(value));
-    toFinishCreating();
-    dispatch(clearActiveTodo());
   };
 
-  const handleInputFocus = () => {
-    if (!activeTodo) {
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.preventDefault(); // Предотвращаем дальнейшее всплытие
+    e.stopPropagation();
+
+    // eslint-disable-next-line no-console
+    console.log('handleInputFocus', 'isNewTodo', isNewTodo, todo);
+
+    if (!activeTodo && todo) {
+      // eslint-disable-next-line no-console
+      console.log('handleInputFocus setActiveTodo', value);
+
+      setValue(todo);
       dispatch(setActiveTodo(todo));
+      // setActiveInputRef(inputRef);
     }
   };
 
   const handleInputBlur = () => {
-    if (activeTodo && activeTodo?.todoId === todo.todoId) {
-      handleInputSubmit();
-      dispatch(clearActiveTodo());
-    }
+    // eslint-disable-next-line no-console
+    console.log('handleInputBlur');
 
-    if (isNewTodo) {
-      toFinishCreating();
+    handleInputSubmit();
+    dispatch(clearActiveTodo());
+    setValue(initialTodo);
+
+    // if (setActiveInputRef && isNewTodo) {
+    //   setActiveInputRef(null);
+    // }
+
+    if (setIsCreating) {
+      setIsCreating(false);
     }
   };
 
@@ -145,14 +234,35 @@ export const Todo: FunctionComponent<TodosProps> = ({
     }
   };
 
-  const isReadOnly = activeTodo?.todoId !== null
-  && activeTodo?.todoId !== todo.todoId;
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('render after mount');
+
+  //   return () => {
+  //     // eslint-disable-next-line no-console
+  //     console.log('render before unmount');
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('render');
+  // });
+
+  // eslint-disable-next-line no-console
+  // console.log('render without useEffect');
+
+  // const handleTodoTitleClick = () => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('handleTodoTitleClick');
+  //   setActiveInputRef(inputRef);
+  // };
 
   return (
-    <Wrapper color={todo.color}>
+    <Wrapper color={value.color}>
       {(format === FORMAT.MONTH || format === FORMAT.WEEK) && (
         <TodoTitle
-          color={todo.color}
+          color={value.color}
           format={format}
         >
           <input
@@ -161,10 +271,11 @@ export const Todo: FunctionComponent<TodosProps> = ({
             name={FORM_DATA.TITLE}
             ref={inputRef}
             onChange={handleInputChange}
-            onFocus={handleInputFocus}
+            onFocus={e => handleInputFocus(e)}
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
-            readOnly={isReadOnly}
+            // readOnly={isReadOnly}
+            className={`inputForFocus-${day}`}
           />
 
           <Button

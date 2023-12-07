@@ -1,7 +1,10 @@
 import {
+  // Dispatch,
   // ChangeEvent,
   FunctionComponent,
-  useRef,
+  // ReactNode,
+  // RefObject, SetStateAction,
+  // useEffect,
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -19,6 +22,7 @@ import { TodoType } from '../types/todo';
 // import { deleteTodo } from '../store/features/todos/todosSlice';
 // import { Button } from './UI/Button';
 import { Todo } from './Todo';
+// import { useDay } from '../hooks/useDay';
 
 const Wrapper = styled.div`
   display: flex;
@@ -75,35 +79,53 @@ const Wrapper = styled.div`
 
 interface TodoListProps {
   todos: TodoType[];
-  isCreatingNewTodo: boolean;
-  setIsCreatingNewTodo: (value: boolean) => void;
+  // children?: React.ReactNode;
+  today: number;
+  // newTodo: ReactNode;
+  // setActiveInputRef:
+  // Dispatch<SetStateAction<RefObject<HTMLInputElement> | null>>;
 }
 
 export const TodoList: FunctionComponent<TodoListProps> = ({
   todos,
-  isCreatingNewTodo,
-  setIsCreatingNewTodo,
+  // children,
+  today,
+  // newTodo,
+  // setActiveInputRef,
 }) => {
-  // const dispatch = useAppDispatch();
+  // const { day } = useDay(today);
   const format = useAppSelector(selectFormat);
-  const todoRef = useRef<HTMLDivElement>(null);
-
   const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
     ? i < 4 : true));
+  const isShowDots = (format === FORMAT.MONTH) && todos.length > 6;
 
-  const isShowDots = (format === FORMAT.MONTH) && todos.length > 4;
-  const toFinishCreating = () => setIsCreatingNewTodo(false);
+  // useEffect(() => {
+  //   const inputElement: HTMLInputElement | null
+  //    = document.querySelector('.inputForFocus');
+
+  //   if (inputElement) {
+  //     inputElement.focus();
+  //   }
+  // }, [todos]);
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('render todoList', day);
+  // }, [todos.length]);
 
   return (
-    <Wrapper ref={todoRef}>
-      {shortedListTodos.map((todo, i) => (
+    <Wrapper>
+      {shortedListTodos.map((todo) => (
         <Todo
           key={todo.todoId}
           todo={todo}
-          toFinishCreating={toFinishCreating}
-          isNewTodo={isCreatingNewTodo && i === 0}
+          // todosLength={todos.length}
+          today={today}
+          // setActiveInputRef={setActiveInputRef}
         />
       ))}
+
+      {/* {newTodo} */}
 
       {isShowDots && <IoEllipsisHorizontal />}
     </Wrapper>

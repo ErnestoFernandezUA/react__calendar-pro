@@ -49,7 +49,7 @@ const intervalSlice = createSlice({
       state: IntervalState,
       action: PayloadAction<number>,
     ) => {
-      state.currentDate = new Date(action.payload).valueOf();
+      state.currentDate = action.payload;
     },
     setFormat: (
       state: IntervalState,

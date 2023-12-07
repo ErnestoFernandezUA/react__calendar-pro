@@ -1,6 +1,3 @@
-import {
-  FunctionComponent, useEffect, useState,
-} from 'react';
 import styled, { css } from 'styled-components';
 
 import {
@@ -11,12 +8,12 @@ import {
   setSpecialDate,
 } from '../store/features/interval/intervalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { TodoList } from './TodoList';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { useCurrent } from '../hooks/useCurrent';
 import { TodoType } from '../types/todo';
-import { useDay } from '../hooks/useDay';
 import { selectTodos } from '../store/features/todos/todosSlice';
+import { useDay } from '../hooks/useDay';
+import { DayBody } from './DayBody';
 
 type StyledProps = {
   format?: string,
@@ -94,15 +91,6 @@ const DayTitle = styled.div<{ $isCurrentDay: boolean, format: string }>`
   `}
 `;
 
-const DayBody = styled.div<{ format: string }>`
-  ${({ format }) => format !== FORMAT.YEAR && css`
-    height: 11em;
-  `}
-
-  &:hover {
-  }
-`;
-
 const DayOfWeek = styled.button<StyledProps>`
   display: none;
   cursor: pointer;
@@ -153,17 +141,17 @@ const DateString = styled.p<{ format?: string }>`
   `}
 `;
 
-const DayListTodos = styled.div<{ format?: string }>`
-  box-sizing: border-box;
-  padding: 10px;
-`;
+// const DayListTodos = styled.div<{ format?: string }>`
+//   box-sizing: border-box;
+//   padding: 10px;
+// `;
 
 interface DayProps {
   startDay: number;
   disabled?: boolean;
 }
 
-export const Day: FunctionComponent<DayProps> = ({
+export const Day: React.FC<DayProps> = ({
   startDay,
   disabled = false,
 }) => {
@@ -182,32 +170,16 @@ export const Day: FunctionComponent<DayProps> = ({
     isCurrentMonth,
   } = useCurrent(currentDate, startDay);
   const todos = useAppSelector(selectTodos);
-  const [isCreatingNewTodo, setIsCreatingNewTodo] = useState<boolean>(false);
-  const [preparedTodos, setPreparedTodos] = useState<TodoType[]>([]);
-
-  useEffect(() => {
-    const InitialTodo: TodoType = {
-      todoId: `${new Date().valueOf()}`,
-      title: '',
-      description: '',
-      date: startDay,
-      color: '',
-    };
-
-    setPreparedTodos(isCreatingNewTodo
-      ? [InitialTodo, ...todos.filter((todo: TodoType) => {
-        return (startDay <= todo.date)
-        && (todo.date < startDay + 24 * 60 * 60 * 1000);
-      })]
-      : todos.filter((todo: TodoType) => {
-        return (startDay <= todo.date)
-        && (todo.date < startDay + 24 * 60 * 60 * 1000);
-      }));
-  }, [isCreatingNewTodo, format, todos]);
-
+  const preparedTodos = todos.filter((todo: TodoType) => {
+    return (startDay <= todo.date)
+    && (todo.date < startDay + 24 * 60 * 60 * 1000);
+  });
   const isTodosToday = !!preparedTodos.length;
 
   const onDayClick = () => {
+    // eslint-disable-next-line no-console
+    console.log('onDayClick');
+
     if (isCurrentDay && format === FORMAT.DAY) {
       return;
     }
@@ -249,13 +221,7 @@ export const Day: FunctionComponent<DayProps> = ({
     }
   };
 
-  const onDayBodyClick = () => {
-    // eslint-disable-next-line no-console
-    console.log('onDayBodyClick');
-
-    dispatch(setSpecialDate(startDay));
-    setIsCreatingNewTodo(true);
-  };
+  // const newTodo = isCurrentDay ? (<Todo isNewTodo today={startDay} />) : null;
 
   if (disabled) {
     return (
@@ -300,20 +266,10 @@ export const Day: FunctionComponent<DayProps> = ({
       </DayTitle>
 
       <DayBody
-        onClick={onDayBodyClick}
-        // onBlur={() => console.log('onBlur day body')}
-        format={format}
-      >
-        {(format !== FORMAT.YEAR) && isTodosToday && (
-          <DayListTodos format={format}>
-            <TodoList
-              todos={preparedTodos}
-              isCreatingNewTodo={isCreatingNewTodo}
-              setIsCreatingNewTodo={setIsCreatingNewTodo}
-            />
-          </DayListTodos>
-        )}
-      </DayBody>
+        startDay={startDay}
+        todos={preparedTodos}
+        // isActive={isCurrentDay}
+      />
     </Wrapper>
   );
 };
