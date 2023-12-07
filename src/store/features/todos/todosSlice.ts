@@ -62,8 +62,15 @@ const todosSlice = createSlice({
     // },
 
     saveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
-      state.storage = [...state.storage
-        .filter(t => t.todoId !== action.payload.todoId), action.payload];
+      const index = state.storage
+        .findIndex(t => (t.todoId === action.payload.todoId));
+
+      if (index >= 0) {
+        state.storage = state.storage
+          .map(t => (t.todoId === action.payload.todoId ? action.payload : t));
+      } else {
+        state.storage.push(action.payload);
+      }
     },
     deleteTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
       state.storage = state.storage

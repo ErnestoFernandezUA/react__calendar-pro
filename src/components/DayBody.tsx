@@ -169,6 +169,7 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
             today={startDay}
             // newTodo={newTodo}
             // setActiveInputRef={setActiveInputRef}
+            setIsCreating={setIsCreating}
           />
 
           {isCreating && (
@@ -177,6 +178,7 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
               today={startDay}
               // newTodo={newTodo}
               // setActiveInputRef={setActiveInputRef}
+              setIsCreating={setIsCreating}
             />
           )}
         </DayListTodos>

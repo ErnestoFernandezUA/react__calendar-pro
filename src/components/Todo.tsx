@@ -78,7 +78,7 @@ const TodoBody = styled.div`
 `;
 
 interface TodosProps {
-  todo?: TodoType;
+  todo: TodoType;
   // isNewTodo?: boolean;
   // todosLength?: number;
   today: number;
@@ -86,7 +86,7 @@ interface TodosProps {
   // setActiveInputRef:
   // Dispatch<SetStateAction<RefObject<HTMLInputElement> | null>>;
   // activeInputRef?: React.RefObject<HTMLInputElement> | null;
-  setIsCreating?: (value: boolean) => void;
+  setIsCreating: (value: boolean) => void;
 }
 
 export const Todo: FunctionComponent<TodosProps> = ({
@@ -208,15 +208,15 @@ export const Todo: FunctionComponent<TodosProps> = ({
 
     handleInputSubmit();
     dispatch(clearActiveTodo());
-    setValue(initialTodo);
+    // setValue(initialTodo);
 
     // if (setActiveInputRef && isNewTodo) {
     //   setActiveInputRef(null);
     // }
 
-    if (setIsCreating) {
-      setIsCreating(false);
-    }
+    setIsCreating(false);
+    // if (setIsCreating) {
+    // }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

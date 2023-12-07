@@ -84,6 +84,7 @@ interface TodoListProps {
   // newTodo: ReactNode;
   // setActiveInputRef:
   // Dispatch<SetStateAction<RefObject<HTMLInputElement> | null>>;
+  setIsCreating: (value: boolean) => void;
 }
 
 export const TodoList: FunctionComponent<TodoListProps> = ({
@@ -92,6 +93,7 @@ export const TodoList: FunctionComponent<TodoListProps> = ({
   today,
   // newTodo,
   // setActiveInputRef,
+  setIsCreating,
 }) => {
   // const { day } = useDay(today);
   const format = useAppSelector(selectFormat);
@@ -122,6 +124,7 @@ export const TodoList: FunctionComponent<TodoListProps> = ({
           // todosLength={todos.length}
           today={today}
           // setActiveInputRef={setActiveInputRef}
+          setIsCreating={setIsCreating}
         />
       ))}
 
