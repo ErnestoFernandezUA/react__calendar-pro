@@ -80,19 +80,13 @@ export const TodoList: React.FC<TodoListProps> = ({
     ? i < 4 : true));
   const isShowDots = (format === FORMAT.MONTH) && todos.length > 6;
 
-  // useEffect(() => {
-  //   const inputElement: HTMLInputElement | null
-  //    = document.querySelector('.inputForFocus');
-
-  //   if (inputElement) {
-  //     inputElement.focus();
-  //   }
-  // }, [todos]);
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('render todoList', day);
-  // }, [todos.length]);
+  const newTodo = {
+    todoId: `${new Date().valueOf()}`,
+    title: '',
+    description: '',
+    date: today,
+    color: '',
+  };
 
   return (
     <Wrapper>
@@ -100,11 +94,18 @@ export const TodoList: React.FC<TodoListProps> = ({
         <Todo
           key={todo.todoId}
           todo={todo}
-          today={today}
           setIsCreating={setIsCreating}
-          isCreating={isCreating}
+          // isCreating={isCreating}
         />
       ))}
+
+      {isCreating && (
+        <Todo
+          todo={newTodo}
+          setIsCreating={setIsCreating}
+          // isCreating={isCreating}
+        />
+      )}
 
       {isShowDots && <IoEllipsisHorizontal />}
     </Wrapper>

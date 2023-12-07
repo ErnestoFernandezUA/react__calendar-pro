@@ -115,14 +115,6 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
     }
   };
 
-  const newTodo = {
-    todoId: `${new Date().valueOf()}`,
-    title: '',
-    description: '',
-    date: startDay,
-    color: '',
-  };
-
   useEffect(() => {
     // eslint-disable-next-line no-console
     console.log('DayBody useEffect activeTodo');
@@ -141,15 +133,6 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
             setIsCreating={setIsCreating}
             isCreating={isCreating}
           />
-
-          {isCreating && (
-            <TodoList
-              todos={[newTodo]}
-              today={startDay}
-              setIsCreating={setIsCreating}
-              isCreating={isCreating}
-            />
-          )}
         </DayListTodos>
       )}
     </Wrapper>

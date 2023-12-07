@@ -28,7 +28,6 @@ import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
 import { Button } from './UI/Button';
 import { FORM_DATA } from '../utils/constants/FORM_DATA';
-import { useDay } from '../hooks/useDay';
 
 const Wrapper = styled.div<{ color: string }>`
   display: flex;
@@ -76,22 +75,20 @@ const TodoBody = styled.div`
 
 interface TodosProps {
   todo: TodoType;
-  today: number;
   setIsCreating: (value: boolean) => void;
-  isCreating: boolean;
+  // isCreating: boolean;
 }
 
 export const Todo: FunctionComponent<TodosProps> = ({
   todo,
-  today,
   setIsCreating,
-  isCreating,
+  // isCreating,
 }) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
   const activeTodo = useAppSelector(selectActiveTodo);
   const currentDate = useAppSelector(selectCurrentDate);
-  const isNewTodo = !todo?.title; /// isCreating - don't work correctly
+  const isNewTodo = !todo.title; /// isCreating - don't work correctly
 
   const initialTodo: TodoType = {
     todoId: `${new Date().valueOf()}`,
@@ -101,14 +98,10 @@ export const Todo: FunctionComponent<TodosProps> = ({
     color: '',
   };
   const [value, setValue] = useState<TodoType>(todo || initialTodo);
-  const { day } = useDay(today);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (isNewTodo && inputRef.current) {
-      // eslint-disable-next-line no-console
-      console.log('focus', isCreating);
-
       inputRef.current.focus();
     }
   }, [isNewTodo]);
@@ -130,38 +123,20 @@ export const Todo: FunctionComponent<TodosProps> = ({
 
   const handleInputSubmit = () => {
     if (!value?.title) {
-      // eslint-disable-next-line no-console
-      console.log('handleSubmit NOT save todo');
-
       return;
     }
-
-    // eslint-disable-next-line no-console
-    console.log('handleSubmit save todo', value);
 
     dispatch(saveTodo(value));
   };
 
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // eslint-disable-next-line no-console
-    console.log('handleInputFocus', 'isNewTodo', isNewTodo, todo);
-
+  const handleInputFocus = () => {
     if (!activeTodo && todo) {
-      // eslint-disable-next-line no-console
-      console.log('handleInputFocus setActiveTodo', value);
-
       setValue(todo);
       dispatch(setActiveTodo(todo));
     }
   };
 
   const handleInputBlur = () => {
-    // eslint-disable-next-line no-console
-    console.log('handleInputBlur');
-
     handleInputSubmit();
     dispatch(clearActiveTodo());
     setIsCreating(false);
@@ -169,9 +144,6 @@ export const Todo: FunctionComponent<TodosProps> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      // dispatch(saveTodo(value));
-      // dispatch(clearActiveTodo());
-
       handleInputSubmit();
 
       setTimeout(() => {
@@ -195,10 +167,9 @@ export const Todo: FunctionComponent<TodosProps> = ({
             name={FORM_DATA.TITLE}
             ref={inputRef}
             onChange={handleInputChange}
-            onFocus={e => handleInputFocus(e)}
+            onFocus={handleInputFocus}
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
-            className={`inputForFocus-${day}`}
           />
 
           <Button
