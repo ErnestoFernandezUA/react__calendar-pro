@@ -1,28 +1,13 @@
-import {
-  // Dispatch,
-  // ChangeEvent,
-  FunctionComponent,
-  // ReactNode,
-  // RefObject, SetStateAction,
-  // useEffect,
-} from 'react';
 import styled from 'styled-components';
 import {
   IoEllipsisHorizontal,
-  // IoClose,
-  // IoBuild,
-  // IoCart,
 } from 'react-icons/io5';
 
 import { selectFormat } from '../store/features/interval/intervalSlice';
 import { useAppSelector } from '../store/hooks';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
-// import { POPUP } from '../utils/constants/POPUP';
-// import { deleteTodo } from '../store/features/todos/todosSlice';
-// import { Button } from './UI/Button';
 import { Todo } from './Todo';
-// import { useDay } from '../hooks/useDay';
 
 const Wrapper = styled.div`
   display: flex;
@@ -79,23 +64,17 @@ const Wrapper = styled.div`
 
 interface TodoListProps {
   todos: TodoType[];
-  // children?: React.ReactNode;
   today: number;
-  // newTodo: ReactNode;
-  // setActiveInputRef:
-  // Dispatch<SetStateAction<RefObject<HTMLInputElement> | null>>;
   setIsCreating: (value: boolean) => void;
+  isCreating: boolean;
 }
 
-export const TodoList: FunctionComponent<TodoListProps> = ({
+export const TodoList: React.FC<TodoListProps> = ({
   todos,
-  // children,
   today,
-  // newTodo,
-  // setActiveInputRef,
   setIsCreating,
+  isCreating,
 }) => {
-  // const { day } = useDay(today);
   const format = useAppSelector(selectFormat);
   const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
     ? i < 4 : true));
@@ -121,14 +100,11 @@ export const TodoList: FunctionComponent<TodoListProps> = ({
         <Todo
           key={todo.todoId}
           todo={todo}
-          // todosLength={todos.length}
           today={today}
-          // setActiveInputRef={setActiveInputRef}
           setIsCreating={setIsCreating}
+          isCreating={isCreating}
         />
       ))}
-
-      {/* {newTodo} */}
 
       {isShowDots && <IoEllipsisHorizontal />}
     </Wrapper>

@@ -14,7 +14,6 @@ import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
 import { TodoList } from './TodoList';
 import { useDay } from '../hooks/useDay';
-// import { Todo } from './Todo';
 import { selectActiveTodo } from '../store/features/todos/todosSlice';
 
 // type StyledProps = {
@@ -103,16 +102,7 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
   const activeTodo = useAppSelector(selectActiveTodo);
-  // const isWeekend = (new Date(startDay).getDay() === 0
-  // || new Date(startDay).getDay() === 6);
-  // const {
-  //   day,
-  // } = useDay(startDay);
-  // const isTodosToday = !!todos.length;
   const [isCreating, setIsCreating] = useState<boolean>(false);
-  // const [activeInputRef, setActiveInputRef]
-  // = useState<React.RefObject<HTMLInputElement> | null>(null);
-
   const { day } = useDay(startDay);
 
   const onDayBodyClick = (e: React.MouseEvent) => {
@@ -125,15 +115,6 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   if (isCreating && activeInputRef && activeInputRef.current) {
-  //     // eslint-disable-next-line no-console
-  //     console.log('activeInputRef.current.focus();');
-
-  //     // activeInputRef.current.focus();
-  //   }
-  // }, [isCreating, activeInputRef]);
-
   const newTodo = {
     todoId: `${new Date().valueOf()}`,
     title: '',
@@ -142,24 +123,14 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
     color: '',
   };
 
-  // eslint-disable-next-line no-console
-  // console.log('onDayBody', day, isActive, activeInputRef);
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-console
-  //   // console.log('render dayBody', day);
-  // }, [todos.length, isActive]);
-
   useEffect(() => {
-    // if (activeInputRef?.current) {
-    //   activeInputRef?.current.focus();
-    // }
+    // eslint-disable-next-line no-console
+    console.log('DayBody useEffect activeTodo');
   }, [activeTodo]);
 
   return (
     <Wrapper
       onClick={e => onDayBodyClick(e)}
-      // onBlur={() => console.log('onBlur day body')}
       format={format}
     >
       {(format !== FORMAT.YEAR) && (
@@ -167,18 +138,16 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
           <TodoList
             todos={todos}
             today={startDay}
-            // newTodo={newTodo}
-            // setActiveInputRef={setActiveInputRef}
             setIsCreating={setIsCreating}
+            isCreating={isCreating}
           />
 
           {isCreating && (
             <TodoList
               todos={[newTodo]}
               today={startDay}
-              // newTodo={newTodo}
-              // setActiveInputRef={setActiveInputRef}
               setIsCreating={setIsCreating}
+              isCreating={isCreating}
             />
           )}
         </DayListTodos>
