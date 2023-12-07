@@ -33,19 +33,20 @@ const Wrapper = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
   font-size: 0.8em;
+  width: 100%;
 `;
 
 const TodoTitle = styled.div<{ color: string, format?: string }>`
   background-color: ${props => props.color};
   color: var(--primary-text-color);
   display: flex;
-  gap: 5px;
-
+  justify-content: space-between;
+  width: 100%;
 
   & input {
     width: 100%;
     border: none;
-    padding: 0.1em;
+    /* padding: 0.1em; */
     box-sizing: border-box;
   }
 

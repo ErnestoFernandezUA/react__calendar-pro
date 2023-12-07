@@ -7,7 +7,6 @@ const Wrapper = styled.header`
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  padding: 1em;
 `;
 
 const TitleBox = styled.div`
@@ -21,7 +20,7 @@ export const Header: React.FC = () => {
   return (
     <Wrapper>
       <TitleBox>
-        <h1>Calendar PRO MAX</h1>
+        <h1>Calendar PRO</h1>
 
         <ThemeSwitcher />
       </TitleBox>

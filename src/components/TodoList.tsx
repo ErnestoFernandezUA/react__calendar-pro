@@ -75,10 +75,14 @@ export const TodoList: React.FC<TodoListProps> = ({
   setIsCreating,
   isCreating,
 }) => {
+  const maxVisibleTodos = 6;
+
   const format = useAppSelector(selectFormat);
-  const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
-    ? i < 4 : true));
-  const isShowDots = (format === FORMAT.MONTH) && todos.length > 6;
+  // const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
+  //   ? i < maxVisibleTodos : true));
+  const shortedListTodos = todos;
+  const isShowDots = (format === FORMAT.MONTH)
+    && todos.length > maxVisibleTodos;
 
   const newTodo = {
     todoId: `${new Date().valueOf()}`,

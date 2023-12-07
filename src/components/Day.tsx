@@ -32,6 +32,7 @@ const Wrapper = styled.div<StyledProps>`
   ${({ format }) => (format === FORMAT.YEAR) && css`
     border-radius: 0.5em;
     overflow: hidden;
+    border: 1px solid red;
   `}
 
   ${({ format }) => (format === FORMAT.DAY) && css`
@@ -39,7 +40,7 @@ const Wrapper = styled.div<StyledProps>`
   `}
 
   ${({ format }) => (format === FORMAT.WEEK || format === FORMAT.MONTH) && css`
-    height: calc(80vh / 5) ;
+    /* height: calc(80vh / 5) ; */
     cursor: pointer;
 
     &:hover{
@@ -221,8 +222,6 @@ export const Day: React.FC<DayProps> = ({
     }
   };
 
-  // const newTodo = isCurrentDay ? (<Todo isNewTodo today={startDay} />) : null;
-
   if (disabled) {
     return (
       <div />
@@ -251,6 +250,7 @@ export const Day: React.FC<DayProps> = ({
         >
           {format === FORMAT.DAY && fullNameDayOfWeek}
           {(format === FORMAT.WEEK || format === FORMAT.MONTH) && dayOfWeek}
+
         </DayOfWeek>
 
         <DateString format={format}>
@@ -262,13 +262,14 @@ export const Day: React.FC<DayProps> = ({
             && (format === FORMAT.MONTH || format === FORMAT.WEEK)
             && ` ${month}`}
 
+          {format !== FORMAT.YEAR && isTodosToday
+          && (` :  ${preparedTodos.length} todos`)}
         </DateString>
       </DayTitle>
 
       <DayBody
         startDay={startDay}
         todos={preparedTodos}
-        // isActive={isCurrentDay}
       />
     </Wrapper>
   );
