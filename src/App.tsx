@@ -15,6 +15,7 @@ import { FORMAT } from './utils/constants/FORMAT';
 import './App.scss';
 import { Header } from './components/Header';
 import { Main } from './components/Main';
+import { getTodosAsync } from './store/features/todos/todosSlice';
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -32,6 +33,10 @@ export default function App() {
     }
 
     dispatch(setIntervalCalendar());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getTodosAsync());
   }, []);
 
   return (

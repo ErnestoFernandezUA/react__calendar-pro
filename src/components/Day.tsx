@@ -11,8 +11,10 @@ import {
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { useCurrent } from '../hooks/useCurrent';
-import { TodoType } from '../types/todo';
-import { selectTodos } from '../store/features/todos/todosSlice';
+import {
+  // selectStorageTodos,
+  selectTodos,
+} from '../store/features/todos/todosSlice';
 import { useDay } from '../hooks/useDay';
 import { DayBody } from './DayBody';
 
@@ -161,23 +163,32 @@ export const Day: React.FC<DayProps> = ({
   const dispatch = useAppDispatch();
   const currentDate = useAppSelector(selectCurrentDate);
   const format = useAppSelector(selectFormat);
-  const isWeekend = (new Date(startDay).getDay() === 0
-  || new Date(startDay).getDay() === 6);
   const {
     dayOfWeek, month, day, year, fullNameDayOfWeek,
     isFirstDayOfMonth,
     isLastDayOfMonth,
+    isWeekend,
+    // startDay: startDayHook,
   } = useDay(startDay);
+
+  // eslint-disable-next-line no-console
+  // console.log('startDay', startDay, 'startDayHook', startDayHook,
+  //   startDay === startDayHook);
+
   const {
     isCurrentDay,
     isCurrentMonth,
   } = useCurrent(currentDate, startDay);
-  const todos = useAppSelector(selectTodos);
-  const preparedTodos = todos.filter((todo: TodoType) => {
-    return (startDay <= todo.date)
-    && (todo.date < startDay + 24 * 60 * 60 * 1000);
-  });
-  const isTodosToday = !!preparedTodos.length;
+  const todos = useAppSelector(selectTodos)[startDay] || [];
+  const prepared = useAppSelector(selectTodos);
+  const isTodosToday = !!todos.length;
+
+  if (isTodosToday) {
+    // eslint-disable-next-line no-console
+    console.log('DayFC', day, todos);
+    // eslint-disable-next-line no-console
+    console.log(prepared);
+  }
 
   const onDayClick = () => {
     // eslint-disable-next-line no-console
@@ -267,7 +278,7 @@ export const Day: React.FC<DayProps> = ({
             && ` ${month}`}
 
           {format !== FORMAT.YEAR && isTodosToday
-          && (` :  ${preparedTodos.length} todos`)}
+          && (` :  ${todos.length} todos`)}
         </DateString>
       </DayTitle>
 
@@ -279,7 +290,7 @@ export const Day: React.FC<DayProps> = ({
           >
             <DayBody
               startDay={startDay}
-              todos={preparedTodos}
+              todos={todos}
               placeholder={provided.placeholder}
             />
           </div>

@@ -1,12 +1,15 @@
+import { DraggableLocation } from 'react-beautiful-dnd';
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../..';
 import todos from '../../../server/todos.json';
 import { TodoType } from '../../../types/todo';
+import { getStartDay } from '../../../utils/getStartDay';
 
 export interface TodosState {
   storage: TodoType[];
+  preparedTodos: Record<string, TodoType[]>;
   statusLoading: 'idle' | 'loading' | 'failed';
   error: unknown;
 
@@ -15,6 +18,7 @@ export interface TodosState {
 
 const initialState: TodosState = {
   storage: [],
+  preparedTodos: {},
   statusLoading: 'idle',
   error: null,
 
@@ -34,9 +38,6 @@ export const getTodosAsync = createAsyncThunk(
   async () => {
     const response: TodoType[] = await getTodos();
 
-    // eslint-disable-next-line no-console
-    console.log(response);
-
     return response;
   },
 );
@@ -45,36 +46,73 @@ const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
-      state.storage.push(action.payload);
-    },
-    // changeTodo: (
-    //   state: TodosState,
-    //   action: PayloadAction<{ todoId: string, todo: TodoType }>,
-    // ) => {
-    //   state.storage = state.storage.map(todo => {
-    //     if (todo.todoId === action.payload.todoId) {
-    //       return action.payload.todo;
-    //     }
-
-    //     return todo;
-    //   });
-    // },
-
     saveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
-      const index = state.storage
-        .findIndex(t => (t.todoId === action.payload.todoId));
+      const todo = action.payload;
+      const startDay = getStartDay(todo.date);
+
+      if (!(startDay in state.preparedTodos)) {
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          [startDay]: [todo],
+        };
+      }
+
+      const index = state.preparedTodos[startDay]
+        .findIndex(t => (t.todoId === todo.todoId));
 
       if (index >= 0) {
-        state.storage = state.storage
-          .map(t => (t.todoId === action.payload.todoId ? action.payload : t));
+        // eslint-disable-next-line no-console
+        console.log('todo exist', index);
+
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          [startDay]: state.preparedTodos[startDay]
+            .map(t => (t.todoId === todo.todoId ? todo : t)),
+        };
       } else {
-        state.storage.push(action.payload);
+        // eslint-disable-next-line no-console
+        console.log('todo NOT exist', index, state.preparedTodos[startDay]);
+
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          [startDay]: [...state.preparedTodos[startDay], todo],
+        };
       }
     },
+    moveTodo: (state: TodosState, action: PayloadAction<{
+      destination: DraggableLocation;
+      source: DraggableLocation;
+      draggableId: string;
+    }>) => {
+      // eslint-disable-next-line no-console
+      console.log('moveTodo', state, action.payload);
+
+      const { source, destination } = action.payload;
+
+      const newSource = [...state.preparedTodos[source.droppableId]];
+      const [movingTodo] = newSource.splice(source.index, 1);
+      const newDestination = [
+        ...(state.preparedTodos[destination.droppableId] || [])];
+
+      newDestination.splice(destination.index, 0, movingTodo);
+
+      // eslint-disable-next-line no-console
+      console.log(newSource);
+
+      state.preparedTodos = {
+        ...state.preparedTodos,
+        [source.droppableId]: newSource,
+        [destination.droppableId]: newDestination,
+      };
+    },
     deleteTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
-      state.storage = state.storage
-        .filter(t => t.todoId !== action.payload.todoId);
+      const startDay = getStartDay(action.payload.date);
+
+      state.preparedTodos = {
+        ...state.preparedTodos,
+        [startDay]: state.preparedTodos[startDay]
+          .filter(t => t.todoId !== action.payload.todoId),
+      };
     },
     setActiveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
       // eslint-disable-next-line no-console
@@ -119,8 +157,29 @@ const todosSlice = createSlice({
         state.statusLoading = 'loading';
       })
       .addCase(getTodosAsync.fulfilled, (state, action) => {
+        // eslint-disable-next-line no-console
+        console.log('getTodosAsync.fulfilled', action.payload);
+
         state.storage.push(...action.payload);
         state.statusLoading = 'idle';
+
+        const todosPayload = action.payload;
+        const prepared: Record<string, TodoType[]> = { ...state.preparedTodos };
+
+        for (let i = 0; i < todosPayload.length; i += 1) {
+          const startDay = getStartDay(todosPayload[i].date);
+
+          if (startDay in prepared) {
+            prepared[startDay].push(todosPayload[i]);
+          } else {
+            prepared[startDay] = [todosPayload[i]];
+          }
+        }
+
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          ...prepared,
+        };
       })
       .addCase(getTodosAsync.rejected, (state, action) => {
         state.statusLoading = 'failed';
@@ -133,18 +192,18 @@ const todosSlice = createSlice({
 
 export default todosSlice.reducer;
 export const {
-  addTodo,
-  // changeTodo,
   saveTodo,
   setActiveTodo,
   clearActiveTodo,
+  moveTodo,
   deleteTodo,
   setStatus,
   setError,
   resetStateTodos,
 } = todosSlice.actions;
 
-export const selectTodos = (state: RootState) => state.todos.storage;
+export const selectStorageTodos = (state: RootState) => state.todos.storage;
+export const selectTodos = (state: RootState) => state.todos.preparedTodos;
 export const selectTodosStatusLoading
 = (state: RootState) => state.todos.statusLoading;
 export const selectTodosError = (state: RootState) => state.todos.error;

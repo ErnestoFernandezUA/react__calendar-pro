@@ -13,6 +13,7 @@ import { Day } from './Day';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { MONTH_NAMES } from '../utils/constants/MONTH';
 import { WEEK } from '../utils/constants/WEEK';
+import { moveTodo } from '../store/features/todos/todosSlice';
 
 const Wrapper = styled.div<{ format?: string }>`
   ${({ format }) => {
@@ -108,10 +109,23 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
     // eslint-disable-next-line no-console
     console.log('Main: handleOnDragEnd', results);
 
-    const { destination, source } = results;
+    const { destination, source, draggableId } = results;
 
     // eslint-disable-next-line no-console
-    console.log(destination, source);
+    console.log(results);
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId
+      && destination.index === source.index
+    ) {
+      return;
+    }
+
+    dispatch(moveTodo({ destination, source, draggableId }));
   };
 
   return (
