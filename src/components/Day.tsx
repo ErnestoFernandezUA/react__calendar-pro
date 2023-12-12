@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Droppable } from 'react-beautiful-dnd';
 
 import {
   selectCurrentDate,
@@ -36,15 +37,17 @@ const Wrapper = styled.div<StyledProps>`
   `}
 
   ${({ format }) => (format === FORMAT.DAY) && css`
-    height: 100vh;
   `}
 
-  ${({ format }) => (format === FORMAT.WEEK || format === FORMAT.MONTH) && css`
-    /* height: calc(80vh / 5) ; */
+  ${({ $isCurrentDay }) => (!$isCurrentDay) && css`
     cursor: pointer;
 
     &:hover{
       box-shadow: var(--box-shadow-color) 0px 1px 4px;
+    }
+
+    &:hover > div:first-child {
+      background-color: rgb(121, 198, 198, 50%);
     }
   `}
 
@@ -77,7 +80,6 @@ const DayTitle = styled.div<{ $isCurrentDay: boolean, format: string }>`
 
   ${({ format }) => format === FORMAT.YEAR && css`
     line-height: 3em;
-    /* font-size: 0.8em; */
   `}
 
   ${({ $isCurrentDay }) => $isCurrentDay && css`
@@ -185,12 +187,12 @@ export const Day: React.FC<DayProps> = ({
       return;
     }
 
-    if (isCurrentDay) {
-      dispatch(setFormat(FORMAT.DAY));
-      dispatch(setIntervalCalendar());
+    // if (isCurrentDay) {
+    //   dispatch(setFormat(FORMAT.DAY));
+    //   dispatch(setIntervalCalendar());
 
-      return;
-    }
+    //   return;
+    // }
 
     if (!disabled) {
       dispatch(setSpecialDate(startDay));
@@ -235,11 +237,12 @@ export const Day: React.FC<DayProps> = ({
       $isNotCurrentMonth={!isCurrentMonth}
       $isCurrentDay={isCurrentDay}
       $isTodosToday={isTodosToday}
+      onClick={onDayClick}
+
     >
       <DayTitle
         $isCurrentDay={isCurrentDay}
         format={format}
-        onClick={onDayClick}
       >
         <DayOfWeek
           onClick={(e) => onWeekClick(e)}
@@ -249,7 +252,8 @@ export const Day: React.FC<DayProps> = ({
           $isCurrentDay={isCurrentDay}
         >
           {format === FORMAT.DAY && fullNameDayOfWeek}
-          {(format === FORMAT.WEEK || format === FORMAT.MONTH) && dayOfWeek}
+          {(format === FORMAT.WEEK || format === FORMAT.MONTH)
+          && dayOfWeek}
 
         </DayOfWeek>
 
@@ -267,10 +271,20 @@ export const Day: React.FC<DayProps> = ({
         </DateString>
       </DayTitle>
 
-      <DayBody
-        startDay={startDay}
-        todos={preparedTodos}
-      />
+      <Droppable droppableId={String(startDay)} type="groupe">
+        {(provided) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            <DayBody
+              startDay={startDay}
+              todos={preparedTodos}
+              placeholder={provided.placeholder}
+            />
+          </div>
+        )}
+      </Droppable>
     </Wrapper>
   );
 };

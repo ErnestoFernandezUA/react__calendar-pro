@@ -1,4 +1,5 @@
 import { FunctionComponent, useRef } from 'react';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled, { css } from 'styled-components';
 import {
   IS_MONDAY_FIRST_DAY_OF_WEEK,
@@ -103,33 +104,47 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
     ? WEEK.slice(1).concat(WEEK[0])
     : WEEK;
 
+  const handleOnDragEnd = (results: DropResult) => {
+    // eslint-disable-next-line no-console
+    console.log('Main: handleOnDragEnd', results);
+
+    const { destination, source } = results;
+
+    // eslint-disable-next-line no-console
+    console.log(destination, source);
+  };
+
   return (
-    <Wrapper format={format}>
-      <MonthTitle format={format}>
-        {format === FORMAT.YEAR ? (
-          <button
-            type="button"
-            onClick={e => onMonthHandler(e)}
-            data-month-value={String(interval[0])}
-          >
-            {MONTH_NAMES[monthName.current]}
-          </button>
-        ) : (
-          preparedWeek.map(d => (
-            <div key={d}>{d}</div>
-          ))
-        )}
-      </MonthTitle>
+    <>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Wrapper format={format}>
+          <MonthTitle format={format}>
+            {format === FORMAT.YEAR ? (
+              <button
+                type="button"
+                onClick={e => onMonthHandler(e)}
+                data-month-value={String(interval[0])}
+              >
+                {MONTH_NAMES[monthName.current]}
+              </button>
+            ) : (
+              preparedWeek.map(d => (
+                <div key={d}>{d}</div>
+              ))
+            )}
+          </MonthTitle>
 
-      <MonthContainer format={format}>
-        {empty.map((emptyItem: number) => (
-          <Day key={emptyItem} startDay={emptyItem} disabled />
-        ))}
+          <MonthContainer format={format}>
+            {empty.map((emptyItem: number) => (
+              <Day key={emptyItem} startDay={emptyItem} disabled />
+            ))}
 
-        {interval.map((day: number) => (
-          <Day key={day} startDay={day} />
-        ))}
-      </MonthContainer>
-    </Wrapper>
+            {interval.map((day: number) => (
+              <Day key={day} startDay={day} />
+            ))}
+          </MonthContainer>
+        </Wrapper>
+      </DragDropContext>
+    </>
   );
 };

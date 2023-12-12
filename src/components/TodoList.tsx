@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import {
   IoEllipsisHorizontal,
 } from 'react-icons/io5';
+import { Draggable } from 'react-beautiful-dnd';
+import { MdDragIndicator } from 'react-icons/md';
 
 import { selectFormat } from '../store/features/interval/intervalSlice';
 import { useAppSelector } from '../store/hooks';
@@ -13,6 +15,15 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const DragWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  & >:first-child {
+    margin: 0 0.2em;
+  }
 `;
 
 // const TodoContainer = styled.div<{ format?: string }>`
@@ -78,8 +89,6 @@ export const TodoList: React.FC<TodoListProps> = ({
   const maxVisibleTodos = 6;
 
   const format = useAppSelector(selectFormat);
-  // const shortedListTodos = todos.filter((_, i) => ((format === FORMAT.MONTH)
-  //   ? i < maxVisibleTodos : true));
   const shortedListTodos = todos;
   const isShowDots = (format === FORMAT.MONTH)
     && todos.length > maxVisibleTodos;
@@ -94,20 +103,33 @@ export const TodoList: React.FC<TodoListProps> = ({
 
   return (
     <Wrapper>
-      {shortedListTodos.map((todo) => (
-        <Todo
+      {shortedListTodos.map((todo, index) => (
+        <Draggable
+          draggableId={todo.todoId}
+          index={index}
           key={todo.todoId}
-          todo={todo}
-          setIsCreating={setIsCreating}
-          // isCreating={isCreating}
-        />
+        >
+          {(provided) => (
+            <DragWrapper
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+            >
+              <MdDragIndicator />
+
+              <Todo
+                todo={todo}
+                setIsCreating={setIsCreating}
+              />
+            </DragWrapper>
+          )}
+        </Draggable>
       ))}
 
       {isCreating && (
         <Todo
           todo={newTodo}
           setIsCreating={setIsCreating}
-          // isCreating={isCreating}
         />
       )}
 

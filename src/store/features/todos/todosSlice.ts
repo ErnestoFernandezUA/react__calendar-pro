@@ -77,6 +77,9 @@ const todosSlice = createSlice({
         .filter(t => t.todoId !== action.payload.todoId);
     },
     setActiveTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
+      // eslint-disable-next-line no-console
+      console.log('todosSlice setActiveTodo', action.payload);
+
       state.activeTodo = action.payload;
     },
     clearActiveTodo: (state: TodosState) => {

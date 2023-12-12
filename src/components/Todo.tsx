@@ -78,12 +78,15 @@ interface TodosProps {
   todo: TodoType;
   setIsCreating: (value: boolean) => void;
   // isCreating: boolean;
+  // ref?: React.Ref<HTMLElement>;
 }
 
 export const Todo: FunctionComponent<TodosProps> = ({
   todo,
   setIsCreating,
   // isCreating,
+  // ref,
+  // ...props
 }) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
@@ -123,7 +126,7 @@ export const Todo: FunctionComponent<TodosProps> = ({
   };
 
   const handleInputSubmit = () => {
-    if (!value?.title) {
+    if (value?.title === todo.title) {
       return;
     }
 
@@ -156,7 +159,20 @@ export const Todo: FunctionComponent<TodosProps> = ({
   };
 
   return (
-    <Wrapper color={value.color}>
+    <Wrapper
+      color={value.color}
+      // {...props}
+      // ref={ref}
+      // draggable
+      // // eslint-disable-next-line no-console
+      // onDragStart={e => console.log('onDragStart', e)}
+      // // eslint-disable-next-line no-console
+      // onDragEnter={e => console.log('onDragEnter', e)}
+      // // eslint-disable-next-line no-console
+      // onDragEnd={e => console.log('onDragEnd', e)}
+      // // eslint-disable-next-line no-console
+      // onDragOver={e => console.log('onDragOver', e)}
+    >
       {(format === FORMAT.MONTH || format === FORMAT.WEEK) && (
         <TodoTitle
           color={value.color}
@@ -169,6 +185,7 @@ export const Todo: FunctionComponent<TodosProps> = ({
             ref={inputRef}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
+            // onDoubleClick={handleInputFocus}
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
           />

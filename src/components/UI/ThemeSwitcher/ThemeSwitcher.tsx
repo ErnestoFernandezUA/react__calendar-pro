@@ -13,13 +13,16 @@ import { Theme } from '../../../types/theme';
 const Wrapper = styled.label`
   display: flex;
   align-items: center;
-  gap: 0.8em;
   user-select: none;
   cursor: pointer;
+
+  & > span {
+    margin-right: 0.8em;
+  }
 `;
 
 const Invisible = styled.input`
-  visibility: hidden;
+  display: none;
 `;
 
 const Switcher = styled.div<{ $isDark: boolean; }>`
@@ -54,9 +57,13 @@ export const ThemeSwitcher: React.FC = () => {
 
   return (
     <Wrapper className="Wrapper">
-      {theme === Theme.SYSTEM && 'System'}
-      {theme === Theme.DARK && 'Dark'}
-      {theme === Theme.LIGHT && 'Light'}
+      <Invisible type="checkbox" checked={isDark} onChange={themeHandler} />
+
+      <span>
+        {theme === Theme.SYSTEM && 'System'}
+        {theme === Theme.DARK && 'Dark'}
+        {theme === Theme.LIGHT && 'Light'}
+      </span>
 
       <Tooltip
         anchorSelect=".Wrapper"
@@ -75,8 +82,6 @@ export const ThemeSwitcher: React.FC = () => {
           <p>Use a toggle switch to choose the theme, please</p>
         </div>
       </Tooltip>
-
-      <Invisible type="checkbox" checked={isDark} onChange={themeHandler} />
 
       <Switcher $isDark={isDark}>
         <Icon>

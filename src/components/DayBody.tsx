@@ -1,5 +1,6 @@
 import {
   FunctionComponent,
+  ReactNode,
   useState,
 } from 'react';
 import styled, { css } from 'styled-components';
@@ -17,7 +18,6 @@ const Wrapper = styled.div<{ format: string }>`
   ${({ format }) => format !== FORMAT.YEAR && css`
     height: 11em;
     overflow: hidden;
-    /* scroll: auto; */
   `}
 
   &:hover {
@@ -32,18 +32,26 @@ const DayListTodos = styled.div<{ format?: string }>`
 interface DayBodyProps {
   startDay: number;
   todos: TodoType[];
+  placeholder: ReactNode;
 }
 
 export const DayBody: FunctionComponent<DayBodyProps> = ({
   startDay,
   todos,
+  placeholder,
 }) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
   const [isCreating, setIsCreating] = useState<boolean>(false);
 
-  const onDayBodyClick = (e: React.MouseEvent) => {
+  const onDayBodyDoubleClick = (e: React.MouseEvent) => {
+    // eslint-disable-next-line no-console
+    console.log('onDayBodyDoubleClick = ');
+
     if (e.target === e.currentTarget) {
+      // eslint-disable-next-line no-console
+      console.log('onDayBodyDoubleClick = ENT', isCreating);
+
       dispatch(setSpecialDate(startDay));
       setIsCreating(true);
     }
@@ -51,7 +59,7 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
 
   return (
     <Wrapper
-      onClick={e => onDayBodyClick(e)}
+      onDoubleClick={e => onDayBodyDoubleClick(e)}
       format={format}
     >
       {(format !== FORMAT.YEAR) && (
@@ -64,6 +72,8 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
           />
         </DayListTodos>
       )}
+
+      {placeholder}
     </Wrapper>
   );
 };

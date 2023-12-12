@@ -7,31 +7,19 @@ import { useAppDispatch, useAppSelector } from './store/hooks';
 import { Theme } from './types/theme';
 import {
   selectCurrentDate,
-  selectEndInterval,
-  selectFormat,
-  selectStartInterval,
   setCurrentDate,
   setFormat,
   setIntervalCalendar,
 } from './store/features/interval/intervalSlice';
-import { buildInterval } from './helpers/buildInterval';
 import { FORMAT } from './utils/constants/FORMAT';
-import { Year } from './components/Year';
-import { Month } from './components/Month';
-import { Day } from './components/Day';
 import './App.scss';
 import { Header } from './components/Header';
+import { Main } from './components/Main';
 
 export default function App() {
   const dispatch = useAppDispatch();
   const theme = useAppSelector(selectTheme);
-
   const currentDate = useAppSelector(selectCurrentDate);
-
-  const start = useAppSelector(selectStartInterval);
-  const end = useAppSelector(selectEndInterval);
-  const interval = buildInterval(start, end);
-  const format = useAppSelector(selectFormat);
 
   useEffect(() => {
     dispatch(setTheme(theme === Theme.SYSTEM ? Theme.SYSTEM : theme));
@@ -49,18 +37,7 @@ export default function App() {
   return (
     <div className="App">
       <Header />
-
-      <main>
-        {/* <ChartViewer /> */}
-        {/* <DataViewer /> */}
-
-        {format === FORMAT.YEAR && <Year interval={interval} />}
-
-        {(format === FORMAT.MONTH || format === FORMAT.WEEK)
-          && <Month interval={interval} />}
-
-        {format === FORMAT.DAY && <Day startDay={interval[0]} />}
-      </main>
+      <Main />
     </div>
   );
 }
