@@ -82,28 +82,34 @@ const todosSlice = createSlice({
     moveTodo: (state: TodosState, action: PayloadAction<{
       destination: DraggableLocation;
       source: DraggableLocation;
-      draggableId: string;
     }>) => {
-      // eslint-disable-next-line no-console
-      console.log('moveTodo', state, action.payload);
-
       const { source, destination } = action.payload;
 
-      const newSource = [...state.preparedTodos[source.droppableId]];
-      const [movingTodo] = newSource.splice(source.index, 1);
-      const newDestination = [
-        ...(state.preparedTodos[destination.droppableId] || [])];
+      if (source.droppableId !== destination.droppableId) {
+        const newSource = [...state.preparedTodos[source.droppableId]];
+        const [movingTodo] = newSource.splice(source.index, 1);
+        const newDestination = [
+          ...(state.preparedTodos[destination.droppableId] || []),
+        ];
 
-      newDestination.splice(destination.index, 0, movingTodo);
+        newDestination.splice(destination.index, 0, movingTodo);
 
-      // eslint-disable-next-line no-console
-      console.log(newSource);
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          [source.droppableId]: newSource,
+          [destination.droppableId]: newDestination,
+        };
+      } else {
+        const newSource = [...state.preparedTodos[source.droppableId]];
+        const [movingTodo] = newSource.splice(source.index, 1);
 
-      state.preparedTodos = {
-        ...state.preparedTodos,
-        [source.droppableId]: newSource,
-        [destination.droppableId]: newDestination,
-      };
+        newSource.splice(destination.index, 0, movingTodo);
+
+        state.preparedTodos = {
+          ...state.preparedTodos,
+          [destination.droppableId]: newSource,
+        };
+      }
     },
     deleteTodo: (state: TodosState, action: PayloadAction<TodoType>) => {
       const startDay = getStartDay(action.payload.date);
@@ -158,7 +164,7 @@ const todosSlice = createSlice({
       })
       .addCase(getTodosAsync.fulfilled, (state, action) => {
         // eslint-disable-next-line no-console
-        console.log('getTodosAsync.fulfilled', action.payload);
+        // console.log('getTodosAsync.fulfilled', action.payload);
 
         state.storage.push(...action.payload);
         state.statusLoading = 'idle';

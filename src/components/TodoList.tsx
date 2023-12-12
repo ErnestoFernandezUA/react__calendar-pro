@@ -20,9 +20,10 @@ const Wrapper = styled.div`
 const DragWrapper = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
 
   & >:first-child {
-    margin: 0 0.2em;
+    margin-right: 0.2em;
   }
 `;
 

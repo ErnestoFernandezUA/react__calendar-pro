@@ -109,7 +109,7 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
     // eslint-disable-next-line no-console
     console.log('Main: handleOnDragEnd', results);
 
-    const { destination, source, draggableId } = results;
+    const { destination, source } = results;
 
     // eslint-disable-next-line no-console
     console.log(results);
@@ -125,7 +125,7 @@ export const Month: FunctionComponent<MonthProps> = ({ interval }) => {
       return;
     }
 
-    dispatch(moveTodo({ destination, source, draggableId }));
+    dispatch(moveTodo({ destination, source }));
   };
 
   return (

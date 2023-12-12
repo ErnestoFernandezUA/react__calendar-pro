@@ -180,15 +180,7 @@ export const Day: React.FC<DayProps> = ({
     isCurrentMonth,
   } = useCurrent(currentDate, startDay);
   const todos = useAppSelector(selectTodos)[startDay] || [];
-  const prepared = useAppSelector(selectTodos);
   const isTodosToday = !!todos.length;
-
-  if (isTodosToday) {
-    // eslint-disable-next-line no-console
-    console.log('DayFC', day, todos);
-    // eslint-disable-next-line no-console
-    console.log(prepared);
-  }
 
   const onDayClick = () => {
     // eslint-disable-next-line no-console
@@ -249,7 +241,6 @@ export const Day: React.FC<DayProps> = ({
       $isCurrentDay={isCurrentDay}
       $isTodosToday={isTodosToday}
       onClick={onDayClick}
-
     >
       <DayTitle
         $isCurrentDay={isCurrentDay}
