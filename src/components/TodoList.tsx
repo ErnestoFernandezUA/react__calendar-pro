@@ -1,78 +1,18 @@
 import styled from 'styled-components';
-import {
-  IoEllipsisHorizontal,
-} from 'react-icons/io5';
-import { Draggable } from 'react-beautiful-dnd';
-import { MdDragIndicator } from 'react-icons/md';
+import { IoEllipsisHorizontal } from 'react-icons/io5';
 
 import { selectFormat } from '../store/features/interval/intervalSlice';
 import { useAppSelector } from '../store/hooks';
 import { FORMAT } from '../utils/constants/FORMAT';
 import { TodoType } from '../types/todo';
 import { Todo } from './Todo';
+import { DraggableHOC } from './DragHOC/DraggableHOC';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
-
-const DragWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-
-  & >:first-child {
-    margin-right: 0.2em;
-  }
-`;
-
-// const TodoContainer = styled.div<{ format?: string }>`
-//   width: 100%;
-//   line-height: 14px;
-//   padding: 0;
-//   margin: 0;
-//   display: flex;
-//   flex-direction: row;
-//   align-items: stretch;
-
-//   & div {
-//     margin-bottom: 4px;
-//     /* max-width: 100px; */
-//   }
-
-//   ${({ format }) => (format === FORMAT.YEAR)
-//   && css`
-//     display: none;
-//   `}
-// `;
-
-// const TodoTitle = styled.div<{ color: string, format?: string }>`
-//   background-color: ${props => props.color};
-//   color: var(--secondary-text-color);
-//   padding: 7px 10px;
-//   border-radius: 8px;
-//   display: flex;
-//   align-items: stretch;
-//   justify-content: space-between;
-//   width: 100%;
-//   display: flex;
-//   align-items: center;
-
-//   & span {
-//     ${({ format }) => (format === FORMAT.MONTH || format === FORMAT.WEEK) && css`
-//       overflow: hidden;
-//       text-overflow: ellipsis;
-//       max-width: 100px;
-//       white-space: nowrap;
-//       display: -webkit-box;
-//       -webkit-line-clamp: 1;
-//       -webkit-box-direction: normal;
-//       -webkit-box-orient: vertical;
-//       overflow-wrap: break-word;
-//     `}
-//   }
-// `;
 
 interface TodoListProps {
   todos: TodoType[];
@@ -105,35 +45,16 @@ export const TodoList: React.FC<TodoListProps> = ({
   return (
     <Wrapper>
       {shortedListTodos.map((todo, index) => (
-        <Draggable
+        <DraggableHOC
           draggableId={todo.todoId}
           index={index}
           key={todo.todoId}
         >
-          {(provided) => (
-            <DragWrapper
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              ref={provided.innerRef}
-            >
-              <MdDragIndicator />
-
-              <Todo
-                todo={todo}
-                setIsCreating={setIsCreating}
-              />
-            </DragWrapper>
-          )}
-        </Draggable>
+          <Todo todo={todo} setIsCreating={setIsCreating} />
+        </DraggableHOC>
       ))}
 
-      {isCreating && (
-        <Todo
-          todo={newTodo}
-          setIsCreating={setIsCreating}
-        />
-      )}
-
+      {isCreating && (<Todo todo={newTodo} setIsCreating={setIsCreating} />)}
       {isShowDots && <IoEllipsisHorizontal />}
     </Wrapper>
   );

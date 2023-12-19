@@ -1,3 +1,6 @@
+import React, {
+// ReactNode,
+} from 'react';
 import styled, { css } from 'styled-components';
 import { Droppable } from 'react-beautiful-dnd';
 
@@ -24,6 +27,7 @@ type StyledProps = {
   $isNotCurrentMonth?: boolean,
   $isCurrentDay?: boolean;
   $isTodosToday?: boolean;
+  $isDraggingOver?: boolean;
 };
 
 const Wrapper = styled.div<StyledProps>`
@@ -41,9 +45,20 @@ const Wrapper = styled.div<StyledProps>`
   ${({ format }) => (format === FORMAT.DAY) && css`
   `}
 
-  ${({ $isCurrentDay }) => (!$isCurrentDay) && css`
-    cursor: pointer;
+  ${({ $isCurrentDay, format }) => !$isCurrentDay && (format === FORMAT.YEAR) && css`
+    /* &:hover{
+      box-shadow: var(--box-shadow-color) 0px 1px 4px;
+    } */
 
+    &:hover > div:first-child {
+      background-color: rgb(121, 198, 198, 50%);
+    }
+  `}
+
+  ${({ $isCurrentDay, format }) => !$isCurrentDay
+  && (format === FORMAT.MONTH)
+  && (format === FORMAT.WEEK)
+  && css`
     &:hover{
       box-shadow: var(--box-shadow-color) 0px 1px 4px;
     }
@@ -53,23 +68,31 @@ const Wrapper = styled.div<StyledProps>`
     }
   `}
 
-  ${({ format, $isWeekend: isWeekend }) => (format === FORMAT.YEAR && isWeekend) && css`
+  ${({ format, $isWeekend }) => (format === FORMAT.YEAR && $isWeekend) && css`
     color: red;
   `}
 
-  ${({ $isNotCurrentMonth: isNotCurrentMonth }) => isNotCurrentMonth && css`
+  ${({ $isNotCurrentMonth }) => $isNotCurrentMonth && css`
     opacity: 0.4;
   `}
 
-  ${({ $isCurrentDay: isCurrentDay, format }) => isCurrentDay && format !== FORMAT.DAY && css`
+  ${({ $isCurrentDay, format }) => $isCurrentDay && format !== FORMAT.DAY && css`
     box-shadow: var(--box-shadow-color) 0px 1px 4px;
   `}
 
-  ${({ $isTodosToday: isTodosToday, format }) => isTodosToday
+  ${({ $isTodosToday, format }) => $isTodosToday
     && format === FORMAT.YEAR
     && css`
       background-color: var(--foreground-color);
     `}
+
+  ${({ $isDraggingOver }) => $isDraggingOver && css`
+    box-shadow: var(--box-shadow-color) 0px 1px 4px;
+
+    & > div:first-child {
+      background-color: rgb(121, 198, 198, 50%);
+    }
+  `}
 `;
 
 const DayTitle = styled.div<{ $isCurrentDay: boolean, format: string }>`
@@ -99,18 +122,12 @@ const DayTitle = styled.div<{ $isCurrentDay: boolean, format: string }>`
 const DayOfWeek = styled.button<StyledProps>`
   display: none;
   cursor: pointer;
-  /* padding: 0 10px; */
-  /* line-height: 30px; */
   border: none;
   outline: none;
   position: relative;
   cursor: pointer;
   text-align: left;
-
-  /* border-right: 10px solid transparent; */
-  width: 80px;
-  /* border-top: 10px solid transparent; */
-  /* border-bottom: 10px solid transparent; */
+  /* width: 80px; */
 
   ${({ $isWeekend: isWeekend }) => isWeekend && css`
     color: #a16e73;
@@ -151,6 +168,31 @@ const DateString = styled.p<{ format?: string }>`
 //   padding: 10px;
 // `;
 
+// interface DroppableHOCProps {
+//   children: ReactNode;
+//   droppableId: string;
+// }
+
+// export const DroppableHOC: React.FC<DroppableHOCProps>
+// = ({ droppableId, children }) => {
+//   return (
+//     <Droppable droppableId={droppableId} type="groupe">
+//       {(droppableProvided, snapshot) => (
+//         <>
+//           {React.isValidElement(children) && React.cloneElement(
+//             children as React.ReactElement,
+//             {
+//               provided: droppableProvided,
+//               isDraggingOver: snapshot.isDraggingOver,
+//               placeholder: droppableProvided.placeholder,
+//             },
+//           )}
+//         </>
+//       )}
+//     </Droppable>
+//   );
+// };
+
 interface DayProps {
   startDay: number;
   disabled?: boolean;
@@ -168,13 +210,7 @@ export const Day: React.FC<DayProps> = ({
     isFirstDayOfMonth,
     isLastDayOfMonth,
     isWeekend,
-    // startDay: startDayHook,
   } = useDay(startDay);
-
-  // eslint-disable-next-line no-console
-  // console.log('startDay', startDay, 'startDayHook', startDayHook,
-  //   startDay === startDayHook);
-
   const {
     isCurrentDay,
     isCurrentMonth,
@@ -234,59 +270,54 @@ export const Day: React.FC<DayProps> = ({
   }
 
   return (
-    <Wrapper
-      format={format}
-      $isWeekend={isWeekend}
-      $isNotCurrentMonth={!isCurrentMonth}
-      $isCurrentDay={isCurrentDay}
-      $isTodosToday={isTodosToday}
-      onClick={onDayClick}
-    >
-      <DayTitle
-        $isCurrentDay={isCurrentDay}
-        format={format}
-      >
-        <DayOfWeek
-          onClick={(e) => onWeekClick(e)}
-          data-day-value={String(startDay)}
+    <Droppable droppableId={String(startDay)} type="groupe">
+      {(provided, snapshot) => (
+        <Wrapper
           format={format}
           $isWeekend={isWeekend}
+          $isNotCurrentMonth={!isCurrentMonth}
           $isCurrentDay={isCurrentDay}
+          $isTodosToday={isTodosToday}
+          onClick={onDayClick}
+          $isDraggingOver={snapshot.isDraggingOver}
         >
-          {format === FORMAT.DAY && fullNameDayOfWeek}
-          {(format === FORMAT.WEEK || format === FORMAT.MONTH)
-          && dayOfWeek}
-
-        </DayOfWeek>
-
-        <DateString format={format}>
-          {format === FORMAT.DAY
-            ? `${day}/${month}/${year}`
-            : `${day}`}
-
-          {(isFirstDayOfMonth || isLastDayOfMonth || isCurrentDay)
-            && (format === FORMAT.MONTH || format === FORMAT.WEEK)
-            && ` ${month}`}
-
-          {format !== FORMAT.YEAR && isTodosToday
-          && (` :  ${todos.length} todos`)}
-        </DateString>
-      </DayTitle>
-
-      <Droppable droppableId={String(startDay)} type="groupe">
-        {(provided) => (
-          <div
-            {...provided.droppableProps}
-            ref={provided.innerRef}
+          <DayTitle
+            $isCurrentDay={isCurrentDay}
+            format={format}
           >
-            <DayBody
-              startDay={startDay}
-              todos={todos}
-              placeholder={provided.placeholder}
-            />
-          </div>
-        )}
-      </Droppable>
-    </Wrapper>
+            <DayOfWeek
+              onClick={(e) => onWeekClick(e)}
+              data-day-value={String(startDay)}
+              format={format}
+              $isWeekend={isWeekend}
+              $isCurrentDay={isCurrentDay}
+            >
+              {format === FORMAT.DAY && fullNameDayOfWeek}
+              {(format === FORMAT.WEEK || format === FORMAT.MONTH)
+              && dayOfWeek}
+            </DayOfWeek>
+
+            <DateString format={format}>
+              {format === FORMAT.DAY
+                ? `${day}/${month}/${year}`
+                : `${day}`}
+
+              {(isFirstDayOfMonth || isLastDayOfMonth || isCurrentDay)
+                && (format === FORMAT.MONTH || format === FORMAT.WEEK)
+                && ` ${month}`}
+
+              {format !== FORMAT.YEAR && isTodosToday
+              && (` :  ${todos.length} todos`)}
+            </DateString>
+          </DayTitle>
+
+          <DayBody
+            startDay={startDay}
+            todos={todos}
+            provided={provided}
+          />
+        </Wrapper>
+      )}
+    </Droppable>
   );
 };

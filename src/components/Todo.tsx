@@ -34,6 +34,7 @@ const Wrapper = styled.div<{ color: string }>`
   align-items: center;
   font-size: 0.8em;
   width: 100%;
+
 `;
 
 const TodoTitle = styled.div<{ color: string, format?: string }>`
@@ -159,20 +160,7 @@ export const Todo: FunctionComponent<TodosProps> = ({
   };
 
   return (
-    <Wrapper
-      color={value.color}
-      // {...props}
-      // ref={ref}
-      // draggable
-      // // eslint-disable-next-line no-console
-      // onDragStart={e => console.log('onDragStart', e)}
-      // // eslint-disable-next-line no-console
-      // onDragEnter={e => console.log('onDragEnter', e)}
-      // // eslint-disable-next-line no-console
-      // onDragEnd={e => console.log('onDragEnd', e)}
-      // // eslint-disable-next-line no-console
-      // onDragOver={e => console.log('onDragOver', e)}
-    >
+    <Wrapper color={value.color}>
       {(format === FORMAT.MONTH || format === FORMAT.WEEK) && (
         <TodoTitle
           color={value.color}
@@ -185,7 +173,6 @@ export const Todo: FunctionComponent<TodosProps> = ({
             ref={inputRef}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
-            // onDoubleClick={handleInputFocus}
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
           />

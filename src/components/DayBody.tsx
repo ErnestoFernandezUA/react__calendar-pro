@@ -1,8 +1,8 @@
 import {
   FunctionComponent,
-  ReactNode,
   useState,
 } from 'react';
+import { DroppableProvided } from 'react-beautiful-dnd';
 import styled, { css } from 'styled-components';
 
 import {
@@ -32,13 +32,13 @@ const DayListTodos = styled.div<{ format?: string }>`
 interface DayBodyProps {
   startDay: number;
   todos: TodoType[];
-  placeholder: ReactNode;
+  provided: DroppableProvided;
 }
 
 export const DayBody: FunctionComponent<DayBodyProps> = ({
   startDay,
   todos,
-  placeholder,
+  provided,
 }) => {
   const dispatch = useAppDispatch();
   const format = useAppSelector(selectFormat);
@@ -61,6 +61,8 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
     <Wrapper
       onDoubleClick={e => onDayBodyDoubleClick(e)}
       format={format}
+      {...provided.droppableProps}
+      ref={provided.innerRef}
     >
       {(format !== FORMAT.YEAR) && (
         <DayListTodos format={format}>
@@ -73,7 +75,7 @@ export const DayBody: FunctionComponent<DayBodyProps> = ({
         </DayListTodos>
       )}
 
-      {placeholder}
+      {provided.placeholder}
     </Wrapper>
   );
 };
